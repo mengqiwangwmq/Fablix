@@ -56,7 +56,7 @@ public class MovieServlet extends HttpServlet {
                     "FROM movies AS m, ratings AS r " +
                     "WHERE m.id=r.movieId " +
                     "ORDER BY rating DESC " +
-                    "LIMIT 10";
+                    "LIMIT 20";
             // execute query
             ResultSet resultSet = statement.executeQuery(query);
 
@@ -177,9 +177,6 @@ public class MovieServlet extends HttpServlet {
                         "                            <!-- 情報 information -->\n" +
                         "                            <table class=\"listInformation\">\n" +
                         "                                <tbody>\n" +
-                        "                                <tr>\n" +
-                        "                                    <td class=\"ser_one\"></td>\n" +
-                        "                                </tr>\n" +
                         "\n" +
                         "                                <tr>\n" +
                         "                                    <td>\n" +
