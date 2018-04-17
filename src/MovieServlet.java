@@ -32,9 +32,17 @@ public class MovieServlet extends HttpServlet {
         // get the printwriter for writing response
         PrintWriter out = response.getWriter();
 
-        out.println("<html>");
-        out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
-        out.println("<head><title>Fabflix</title></head>");
+        out.println("<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "    <title>"+"Movies"+"</title>\n" +
+                "    <!-- Custom Theme files -->\n" +
+                "    <link href=\"home.css\" rel=\"stylesheet\" type=\"text/css\">\n" +
+                "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n" +
+                "    <!-- //Custom Theme files -->\n" +
+                "    <!-- Responsive Styles and Valid Styles -->\n" +
+                "\n" +
+                "</head>\n");
 
 
         try {
@@ -52,17 +60,85 @@ public class MovieServlet extends HttpServlet {
             // execute query
             ResultSet resultSet = statement.executeQuery(query);
 
-            out.println("<body>");
-            out.println("<h1>Movies</h1>");
+            out.println("<body>\n" +
+                    "<div width=\"100%\" align=\"center\" valign=\"top\">\n" +
+                    "    <table width=\"800\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"\n" +
+                    "           class=\"container top-header-left\">\n" +
+                    "        <tbody>\n" +
+                    "        <!--top margin 顶部空格-->\n" +
+                    "        <tr>\n" +
+                    "            <td height=\"60\"></td>\n" +
+                    "        </tr>\n" +
+                    "\n" +
+                    "        <!-- 头 header -->\n" +
+                    "        <tr>\n" +
+                    "            <td>\n" +
+                    "                <table class=\"ban\">\n" +
+                    "                    <!--head part-->\n" +
+                    "                    <tr>\n" +
+                    "                        <td>\n" +
+                    "                            <table class=\"ban_text one mainContent\">\n" +
+                    "                                <!--top margin 顶部空格-->\n" +
+                    "                                <tr>\n" +
+                    "                                    <td class=\"top-text\" height=\"40\"></td>\n" +
+                    "                                </tr>\n" +
+                    "                                <!--big title-->\n" +
+                    "                                <tr align=\"center\">\n" +
+                    "                                    <td><a class=\"log\" href=\"index.html\">\n" +
+                    "                                        A Website\n" +
+                    "                                        <img src=\"images/logo.png\"\n" +
+                    "                                             style=\"display:inline-block;vertical-align:top;width:40px;height:auto;\">\n" +
+                    "                                    </a></td>\n" +
+                    "                                </tr>\n" +
+                    "                                <!--间隔-->\n" +
+                    "                                <tr>\n" +
+                    "                                    <td height=\"15\"></td>\n" +
+                    "                                </tr>\n" +
+                    "                                <!--description-->\n" +
+                    "                                <tr align=\"center\">\n" +
+                    "                                    <td class=\"line\"><span\n" +
+                    "                                            style=\"color:#fff;font-family: Tahoma;font-size:1.6em;font-weight:bold;line-height:1.5em;text-align:center;text-decoration:none;\">In some degree a movie website...</span>\n" +
+                    "                                    </td>\n" +
+                    "                                </tr>\n" +
+                    "                            </table>\n" +
+                    "                        </td>\n" +
+                    "                    </tr>\n" +
+                    "                    <!--间隔-->\n" +
+                    "                    <tr>\n" +
+                    "                        <td class=\"l-bottom\"></td>\n" +
+                    "                    </tr>\n" +
+                    "                </table>\n" +
+                    "            </td>\n" +
+                    "        </tr>\n" +
+                    "\n" +
+                    "        <!-- 内容 main -->\n" +
+                    "        <tr bgcolor=\"#ffffff\">\n" +
+                    "            <td>\n" +
+                    "                <table class=\"container-middle\">\n" +
+                    "                    <tbody>\n" +
+                    "                    <!--顶部空格 top margin-->\n" +
+                    "                    <tr>\n" +
+                    "                        <td class=\"ser_pad\"></td>\n" +
+                    "                    </tr>\n" +
+                    "                    <!-- 标题 title -->\n" +
+                    "                    <tr>\n" +
+                    "                        <td id=\"SubTitle\" class=\"wel_text\">MOVIE</td>\n" +
+                    "                    </tr>\n" +
+                    "                    <!--分割线图-->\n" +
+                    "                    <tr>\n" +
+                    "                        <td align=\"center\">\n" +
+                    "                            <img src=\"images/sub-log.png\" alt=\" \" width=\"160\" height=\"auto\">\n" +
+                    "                        </td>\n" +
+                    "                    </tr>\n" +
+                    "                    <!--空行-->\n" +
+                    "                    <tr>\n" +
+                    "                        <td height=\"50\"></td>\n" +
+                    "                    </tr>\n" +
+                    "                    <!--表格-->\n");
 
-            out.println("<table border>");
+            StringBuilder insert=new StringBuilder();
 
-            // add table header row
             String header[] = {"Title", "Year", "Director", "Rating", "Genre", "Star"};
-            out.println("<tr>");
-            for (String i : header)
-                out.println("<td>" + i + "</td>");
-            out.println("</tr>");
 
             // add a row for every movie result
             ArrayList<Map> movie = new ArrayList<>();
@@ -93,15 +169,75 @@ public class MovieServlet extends HttpServlet {
                 i.put("Star",star.toString());
 
                 // get a movies from result set
-                out.println("<tr>");
+                out.println("<tr>\n" +
+                        "                        <td>\n" +
+                        "                            <!--图-->\n" +
+                        "                            <img src=\"images/7.jpg\" alt=\" \" width=\"250\" height=\"350\" style=\"float:left\">\n" +
+                        "                            <table width=\"20\" height=\"20\"style=\"float:left\"></table>\n" +
+                        "                            <!-- 情報 information -->\n" +
+                        "                            <table class=\"listInformation\">\n" +
+                        "                                <tbody>\n" +
+                        "                                <tr>\n" +
+                        "                                    <td class=\"ser_one\"></td>\n" +
+                        "                                </tr>\n" +
+                        "\n" +
+                        "                                <tr>\n" +
+                        "                                    <td>\n" +
+                        "                                        <table class=\"ser_left_one\">\n" +
+                        "                                            <tbody>\n" +
+                        "                                            <tr>\n" +
+                        "                                                <td class=\"sub_text\">");
+                out.println(i.get("Title"));
+                i.remove("Title");
+                out.println("</td>\n" +
+                        "                                            </tr>\n" +
+                        "                                            <tr>\n" +
+                        "                                                <td height=\"10\"></td>\n" +
+                        "                                            </tr>\n" +
+                        "                                            <tr>\n" +
+                        "                                                <td class=\"ser_text\">");
                 for(String j :header)
-                    out.println("<td>" + (String)i.get(j) + "</td>");
-                out.println("</tr>");
+                    out.println("<p>" + j+": "+(String)i.get(j) + "</p>");
+                out.println("</td>\n" +
+                        "                                            </tr>\n" +
+                        "                                            </tbody>\n" +
+                        "                                        </table>\n" +
+                        "                                    </td>\n" +
+                        "                                </tr>\n" +
+                        "                                <tr>\n" +
+                        "                                    <td height=\"15\"></td>\n" +
+                        "                                </tr>\n" +
+                        "                                </tbody>\n" +
+                        "                            </table>");
             }
 
-            out.println("</table>");
+            out.println("</td>\n" +
+                    "                    </tr>\n" +
+                    "                    <!--空行-->\n" +
+                    "                    <tr>\n" +
+                    "                        <td height=\"70\"></td>\n" +
+                    "                    </tr>\n" +
+                    "                </table>\n" +
+                    "            </td>\n" +
+                    "        </tr>\n" +
+                    "        <!--bottom margin 底部空格-->\n" +
+                    "        <tr>\n" +
+                    "            <td class=\"ser_pad\"></td>\n" +
+                    "        </tr>\n" +
+                    "        </tbody>\n" +
+                    "    </table>\n" +
+                    "    </td>\n" +
+                    "    </tr>\n" +
+                    "    <tr>\n" +
+                    "        <td height=\" 60\"></td>\n" +
+                    "    </tr>\n" +
+                    "    </tbody>\n" +
+                    "    </table>\n" +
+                    "\n" +
+                    "</div>\n" +
+                    "</body>\n" +
+                    "</html>");
 
-            out.println("</body>");
 
             resultSet.close();
             statement.close();
