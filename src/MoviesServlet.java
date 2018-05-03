@@ -54,21 +54,27 @@ public class MoviesServlet extends HttpServlet {
                 jsonArray.add(jsonObject);
             }
 
+            query = "SELECT g.name AS genre " +
+                    "FROM genres_in_movies AS gm INNER JOIN genres AS g ON gm.genreId=g.id " +
+                    "WHERE gm.movieId=? ";
+            PreparedStatement genreStatement=conn.prepareStatement(query);
+            query="SELECT s.name AS star " +
+                    "FROM stars_in_movies AS sm INNER JOIN stars AS s ON sm.starId=s.id " +
+                    "WHERE sm.movieId=? ";
+            PreparedStatement starStatement=conn.prepareStatement(query);
             for (JsonElement i : jsonArray) {
                 JsonObject jsonObject = i.getAsJsonObject();
                 String movieId=jsonObject.get("id").getAsString();
-                query = "SELECT g.name AS genre " +
-                        "FROM genres_in_movies AS gm INNER JOIN genres AS g ON gm.genreId=g.id " +
-                        "WHERE gm.movieId=\"" + movieId + "\"";
-                rs = statement.executeQuery(query);
+
+                genreStatement.setString(1,movieId);
+                rs = genreStatement.executeQuery();
                 JsonArray genre=new JsonArray();
                 while(rs.next())
                     genre.add(rs.getString("genre"));
                 jsonObject.add("genre",genre);
-                query="SELECT s.name AS star " +
-                        "FROM stars_in_movies AS sm INNER JOIN stars AS s ON sm.starId=s.id " +
-                        "WHERE sm.movieId=\"" + movieId + "\"";
-                rs=statement.executeQuery(query);
+
+                starStatement.setString(1,movieId);
+                rs=starStatement.executeQuery();
                 JsonArray star=new JsonArray();
                 while (rs.next())
                     star.add(rs.getString("star"));

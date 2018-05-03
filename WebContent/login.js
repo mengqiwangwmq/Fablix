@@ -1,24 +1,25 @@
+
 /**
  * Handle the data returned by LoginServlet
- * @param resultDataString jsonObject
+ * @param resultData jsonObject
  */
-function handleLoginResult(resultDataString) {
-    resultDataJson = JSON.parse(resultDataString);
+function handleLoginResult(resultData) {
+    alert("haha");
 
     console.log("handle login response");
-    console.log(resultDataJson);
-    console.log(resultDataJson["status"]);
+    console.log(resultData);
+    console.log(resultData["status"]);
 
     // If login success, redirect to index.html page
-    if (resultDataJson["status"] === "success") {
+    if (resultData["status"] === "success") {
         window.location.replace("index.html");
     }
     // If login fail, display error message on <div> with id "login_error_message"
     else {
 
         console.log("show error message");
-        console.log(resultDataJson["message"]);
-        jQuery("#login_error_message").text(resultDataJson["message"]);
+        console.log(resultData["message"]);
+        jQuery("#login_error_message").text(resultData["message"]);
     }
 }
 
@@ -33,7 +34,6 @@ function submitLoginForm(formSubmitEvent) {
     //   which will cause the page to refresh
     //   see jQuery reference for details: https://api.jquery.com/submit/
     formSubmitEvent.preventDefault();
-
     jQuery.post(
         "api/login",
         // Serialize the login form to the data sent by POST request
