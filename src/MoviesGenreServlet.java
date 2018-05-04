@@ -1,10 +1,8 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,10 +14,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import javax.sql.DataSource;
 
-@WebServlet(name = "MoviesServlet", urlPatterns = "/api/movies")
-public class MoviesServlet extends HttpServlet {
+@WebServlet(name = "MoviesServlet", urlPatterns = "/api/movies-genre")
+public class MoviesGenreServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Resource(name = "jdbc/moviedb")
@@ -37,19 +34,23 @@ public class MoviesServlet extends HttpServlet {
         int page = Integer.parseInt(pg);
         int num_per_page = Integer.parseInt(request.getParameter("num_per_page"));
         String sort_by = request.getParameter("sort_by");
+        String genre = request.getParameter("genre");
 
         PrintWriter out = response.getWriter();
 
         try {
             Connection conn = dataSource.getConnection();
             Statement statement = conn.createStatement();
-            String query = "SELECT COUNT(id) AS num FROM movies";
+
+            String query = "SELECT id FROM genres WHERE name='" + genre + "'";
             ResultSet rs = statement.executeQuery(query);
             rs.next();
-            int num = rs.getInt("num");
-            int numPg = num / num_per_page;
+            String genre_id = rs.getString("id");
+
             query = "SELECT m.id AS id, title, year, director, rating " +
                     "FROM (movies AS m INNER JOIN ratings AS r ON m.id=r.movieId) " +
+                    "INNER JOIN genres_in_movies AS gm ON m.id=gm.movieId " +
+                    "WHERE gm.genreId=" + genre_id + " " +
                     "ORDER BY " + sort_by + " DESC " +
                     "LIMIT " + String.valueOf(num_per_page) + " offset " + String.valueOf(page);
             rs = statement.executeQuery(query);
@@ -58,13 +59,16 @@ public class MoviesServlet extends HttpServlet {
 
             JsonArray jsonArray = new JsonArray();
 
+            int num = 0;
             while (rs.next()) {
                 JsonObject jsonObject = new JsonObject();
                 for (String i : header) {
                     jsonObject.addProperty(i, rs.getString(i));
                 }
                 jsonArray.add(jsonObject);
+                ++num;
             }
+            int numPg = num / num_per_page;
 
             query = "SELECT g.name AS genre " +
                     "FROM genres_in_movies AS gm INNER JOIN genres AS g ON gm.genreId=g.id " +
@@ -80,10 +84,10 @@ public class MoviesServlet extends HttpServlet {
 
                 genreStatement.setString(1, movieId);
                 rs = genreStatement.executeQuery();
-                JsonArray genre = new JsonArray();
+                JsonArray movie_genre = new JsonArray();
                 while (rs.next())
-                    genre.add(rs.getString("genre"));
-                jsonObject.add("genre", genre);
+                    movie_genre.add(rs.getString("genre"));
+                jsonObject.add("genre", movie_genre);
 
                 starStatement.setString(1, movieId);
                 rs = starStatement.executeQuery();

@@ -4,7 +4,6 @@
  * @param resultData jsonObject
  */
 function handleLoginResult(resultData) {
-    alert("haha");
 
     console.log("handle login response");
     console.log(resultData);
