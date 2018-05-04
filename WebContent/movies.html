@@ -89,6 +89,53 @@
           <tbody id="movie_table_body">
           </tbody>
           <tbody>
+          <!--分页-->
+          <tbody>
+          <!--空行-->
+          <tr>
+            <td height="30"></td>
+          </tr>
+          <!--页码-->
+          <tr>
+            <td id="pagination" align="center" width="350px"></td>
+          </tr>
+          <!--空行-->
+          <tr>
+            <td height="30"></td>
+          </tr>
+          <tr>
+            <td>
+              <table align="right">
+                <tbody>
+                <tr>
+                  <!--每页显示数量-->
+                  <td>
+                    <font size="0.5em">Show </font>
+                    <input id=num_per_page style="width: 20px" oninput="update()"/>
+                    <font size="0.5em"> movies per page | </font>
+                  </td>
+                  <!--排序方式-->
+                  <td>
+                    <font size="0.5em">Sorted by </font>
+                    <select id="sort_by" onchange="update()">
+                      <option selected="selected">Rating</option>
+                      <option>Title</option>
+                    </select>
+                    <font size="0.5em"> | </font>
+                  </td>
+                  <!--跳转到任意页-->
+                  <td>
+                    <font size="0.5em">
+                      Go to Page:
+                    </font>
+                    <select id=gotoPage onchange="update()"></select>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          </tbody>
           <!--空行-->
           <tr>
             <td height="70"></td>
@@ -111,6 +158,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="pagination.js"></script>
 
 <!-- Load our own JS file -->
 <!-- The path is relative to index.html, since these two files are in the same directory -->

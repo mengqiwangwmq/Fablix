@@ -13,12 +13,20 @@
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
  */
-function handleMovieResult(resultData) {
+function handleMovieResult(resultData,page,num_per_page,sort_by) {
     console.log("handleMovieResult: populating movie table from resultData");
 
     // Populate the star table
     // Find the empty table body by id "star_table_body"
     let movieTableBodyElement = jQuery("#movie_table_body");
+
+    //page=resultData["page"];
+    let num_page=parseInt(resultData["num_page"]);
+    page=parseInt(page);
+    num_per_page=parseInt(num_per_page);
+    resultData=resultData["content"];
+
+    movieTableBodyElement.empty();
 
     // Iterate through resultData, no more than 10 entries
     for (let i = 0; i < Math.min(10, resultData.length); i++) {
@@ -73,17 +81,29 @@ function handleMovieResult(resultData) {
         // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
     }
+    pagination(page,num_per_page,num_page);
 }
 
 
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
-
+function getPage(page,num_per_page,sort_by) {
 // Makes the HTTP GET request and registers on success callback function handleMovieResult
-jQuery.ajax({
-    dataType: "json", // Setting return data type
-    method: "GET", // Setting request method
-    url: "api/movies", // Setting request url, which is mapped by StarsServlet in Stars.java
-    success: handleMovieResult // Setting callback function to handle data returned successfully by the StarsServlet
-});
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "api/movies?page="+page+"&num_per_page="+num_per_page+"&sort_by="+sort_by, // Setting request url, which is mapped by StarsServlet in Stars.java
+        success: (resultData)=>handleMovieResult(resultData,page,num_per_page,sort_by) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
+}
+
+function update(){
+    let page=$('#gotoPage').find('option:selected').val();
+    let num_per_page=$('#num_per_page').val();
+    let sort_by=$('#sort_by').find('option:selected').val();
+    getPage(page,num_per_page,sort_by);
+}
+getPage(1,20);
+
+

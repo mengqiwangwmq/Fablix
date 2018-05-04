@@ -58,6 +58,7 @@ td.l-bottom {
     margin: 0 auto;
     padding: 0;
     border-spacing: 0;
+    word-break: normal;
 }
 
 td.ser_pad {

@@ -17,7 +17,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.sql.DataSource;
 
-@WebServlet(name="MoviesServlet",urlPatterns = "/api/movies")
+@WebServlet(name = "MoviesServlet", urlPatterns = "/api/movies")
 public class MoviesServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -32,15 +32,26 @@ public class MoviesServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
 
+        String pg=request.getParameter("page");
+        int page=Integer.parseInt(pg);
+        int num_per_page=Integer.parseInt(request.getParameter("num_per_page"));
+        String sort_by=request.getParameter("sort_by");
+
         PrintWriter out = response.getWriter();
 
         try {
             Connection conn = dataSource.getConnection();
             Statement statement = conn.createStatement();
-            String query = "SELECT m.id AS id, title, year, director, rating " +
-                    "FROM movies AS m INNER JOIN ratings AS r ON m.id=r.movieId " +
-                    "ORDER BY rating DESC LIMIT 20";
+            String query = "SELECT COUNT(id) AS num FROM movies";
             ResultSet rs = statement.executeQuery(query);
+            rs.next();
+            int num=rs.getInt("num");
+            int numPg=num/num_per_page;
+            query = "SELECT m.id AS id, title, year, director, rating " +
+                    "FROM movies AS m INNER JOIN ratings AS r ON m.id=r.movieId " +
+                    "ORDER BY "+sort_by+" DESC " +
+                    "LIMIT "+String.valueOf(num_per_page)+" offset "+String.valueOf(page);
+            rs = statement.executeQuery(query);
 
             String header[] = {"id", "title", "year", "director", "rating"};
 
@@ -57,30 +68,35 @@ public class MoviesServlet extends HttpServlet {
             query = "SELECT g.name AS genre " +
                     "FROM genres_in_movies AS gm INNER JOIN genres AS g ON gm.genreId=g.id " +
                     "WHERE gm.movieId=? ";
-            PreparedStatement genreStatement=conn.prepareStatement(query);
-            query="SELECT s.name AS star " +
+            PreparedStatement genreStatement = conn.prepareStatement(query);
+            query = "SELECT s.name AS star " +
                     "FROM stars_in_movies AS sm INNER JOIN stars AS s ON sm.starId=s.id " +
                     "WHERE sm.movieId=? ";
-            PreparedStatement starStatement=conn.prepareStatement(query);
+            PreparedStatement starStatement = conn.prepareStatement(query);
             for (JsonElement i : jsonArray) {
                 JsonObject jsonObject = i.getAsJsonObject();
-                String movieId=jsonObject.get("id").getAsString();
+                String movieId = jsonObject.get("id").getAsString();
 
-                genreStatement.setString(1,movieId);
+                genreStatement.setString(1, movieId);
                 rs = genreStatement.executeQuery();
-                JsonArray genre=new JsonArray();
-                while(rs.next())
+                JsonArray genre = new JsonArray();
+                while (rs.next())
                     genre.add(rs.getString("genre"));
-                jsonObject.add("genre",genre);
+                jsonObject.add("genre", genre);
 
-                starStatement.setString(1,movieId);
-                rs=starStatement.executeQuery();
-                JsonArray star=new JsonArray();
+                starStatement.setString(1, movieId);
+                rs = starStatement.executeQuery();
+                JsonArray star = new JsonArray();
                 while (rs.next())
                     star.add(rs.getString("star"));
-                jsonObject.add("star",star);
+                jsonObject.add("star", star);
             }
-            out.write(jsonArray.toString());
+            JsonObject responseObject=new JsonObject();
+            responseObject.add("content",jsonArray);
+            responseObject.addProperty("page",page);
+            responseObject.addProperty("num_page",numPg);
+            responseObject.addProperty("num_per_page",num_per_page);
+            out.write(responseObject.toString());
 
             rs.close();
             statement.close();
