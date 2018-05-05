@@ -17,7 +17,8 @@ function handleSingleMovieResult(resultData, addDelete) {
         param.set("genre", j);
         param.set("page", "1");
         param.set("browse", "Genre");
-        genre += "<a href='" + urlWithoutParam() + paramToUrl(param) + "'>" + j + "</a> ";
+        param.delete("id");
+        genre += "<a href='movies.html" + paramToUrl(param) + "'>" + j + "</a> ";
     }
     let star = "";
     for (let j in resultData["star"]) {
@@ -29,7 +30,7 @@ function handleSingleMovieResult(resultData, addDelete) {
     if (addDelete == 0)
         shopping = "<a href='javascript:addToCart(\"" + id + "\")'>ADD TO CART</a>";
     else
-        shopping = "<form id=form_" + id + " onsubmit='changeAmount(\""+id+"\");return false;'>" +
+        shopping = "<form id=form_" + id + " onsubmit='changeAmount(\"" + id + "\");return false;'>" +
             "<lable>Amount:</lable>" +
             "<input id=input_" + id + " value=0 />" +
             "</form>" +
@@ -52,7 +53,7 @@ function handleSingleMovieResult(resultData, addDelete) {
         "            <tbody>\n";
     rowHTML +=
         "            <tr>\n" +
-        "              <td class=\"sub_text\">" + title + "</td>\n" +
+        "              <td class=\"sub_text\" id='title_" + id + "'>" + title + "</td>\n" +
         "            </tr>\n";
     rowHTML +=
         "            <tr>\n" +

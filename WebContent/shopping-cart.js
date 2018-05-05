@@ -1,10 +1,8 @@
 function handleResult(resultData) {
     $('#movie_table_body').empty();
-    //alert(resultData);
     for (let i of resultData) {
         let id=i["id"];
         let amount=i["amount"];
-        //alert(amount);
         jQuery.ajax({
             dataType: "json",
             method: "GET",

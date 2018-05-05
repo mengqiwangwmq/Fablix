@@ -25,7 +25,6 @@ function handleMovieResult(resultData, page, num_per_page, sort_by) {
 
     //page=resultData["page"];
     let num_page = parseInt(resultData["num_page"]);
-    //alert(num_page);
     page = parseInt(page);
     num_per_page = parseInt(num_per_page);
     resultData = resultData["content"];
@@ -33,10 +32,10 @@ function handleMovieResult(resultData, page, num_per_page, sort_by) {
     movieTableBodyElement.empty();
 
     // Iterate through resultData, no more than 10 entries
-    for (let i = 0; i < Math.min(10, resultData.length); i++) {
-        let title = "<a href='single-movie.html?id=" + resultData[i]["id"] + "'>" + resultData[i]["title"] + "<a>";
+    for (let i of resultData) {
+        let title = "<a href='single-movie.html?id=" + i["id"] + "'>" + i["title"] + "<a>";
         let genre = "";
-        for (let j of resultData[i]["genre"]) {
+        for (let j of i["genre"]) {
             let param = getParam();
             param.set("genre", j);
             param.set("page", "1");
@@ -44,60 +43,17 @@ function handleMovieResult(resultData, page, num_per_page, sort_by) {
             genre += "<a href='" + urlWithoutParam() + paramToUrl(param) + "'>" + j + "</a> ";
         }
         let star = "";
-        for (let j in resultData[i]["star"]) {
-            let id = resultData[i]["starId"][j];
-            let name = resultData[i]["star"][j];
+        for (let j in i["star"]) {
+            let id = i["starId"][j];
+            let name = i["star"][j];
             star += "<a href='single-star.html?id=" + id + "'>" + name + "</a> ";
         }
+        handleSingleMovieResult(i,0);
 
-        // Concatenate the html tags with resultData jsonObject
-        let rowHTML =
-            "<tr>\n" +
-            "  <td>\n" +
-            "    <!--图-->\n" +
-            "    <img src=\"images/7.jpg\" alt=\" \" width=\"250\" height=\"350\" style=\"float:left\">\n" +
-            "    <table width=\"20\" height=\"20\"style=\"float:left\"></table>\n" +
-            "    <!-- 情報 information -->\n" +
-            "    <table class=\"listInformation\">\n" +
-            "      <tbody>\n" +
-            "      <tr>\n" +
-            "        <td>\n" +
-            "          <table class=\"ser_left_one\">\n" +
-            "            <tbody>\n";
-        rowHTML +=
-            "            <tr>\n" +
-            "              <td class=\"sub_text\">" + title + "</td>\n" +
-            "            </tr>\n";
-        rowHTML +=
-            "            <tr>\n" +
-            "              <td height=\"10\"></td>\n" +
-            "            </tr>\n";
-        rowHTML +=
-            "            <tr>\n" +
-            "              <td class=\"ser_text\">\n" +
-            "                <p>Year: " + resultData[i]["year"] + "</p>\n" +
-            "                <p>Director: " + resultData[i]["director"] + "</p>\n" +
-            "                <p>Rating: " + resultData[i]["rating"] + "</p>\n" +
-            "                <p>Genre: " + genre + "</p>\n" +
-            "                <p>Star: " + star + "</p>\n" +
-            "                <p><a href='javascript:addToCart(\""+resultData[i]["id"]+"\")'>ADD TO CART</p>\n" +
-            "              </td>\n" +
-            "            </tr>\n";
-        rowHTML +=
-            "            </tbody>\n" +
-            "          </table>\n" +
-            "        </td>\n" +
-            "      </tr>\n" +
-            "      </tbody>\n" +
-            "    </table>\n" +
-            "  </td>\n" +
-            "</tr>" +
-            "<tr>\n" +
-            "  <td height=\"15\"></td>\n" +
-            "</tr>\n";
-
-        // Append the row created to the table body, which will refresh the page
-        movieTableBodyElement.append(rowHTML);
+    }
+    for(let i of resultData){
+        let id=i["id"];
+        $("#title_"+id).html("<a href='single-movie.html?id=" + id + "'>" + $("#title_"+id).html() + "<a>");
     }
     pagination(page, num_per_page, num_page);
 }
@@ -208,8 +164,6 @@ function update() {
     let sort_by = $('#sort_by').find('option:selected').val();
     if (sort_by != null)
         param.set("sort_by", sort_by);
-    //alert(paramToUrl(param));
-    //alert(urlWithoutParam());
     window.location.href = urlWithoutParam() + paramToUrl(param);
 }
 
