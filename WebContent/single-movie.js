@@ -8,7 +8,8 @@ function handleMovieResult(resultData) {
     movieTableBodyElement.empty();
 
     // Iterate through resultData, no more than 10 entries
-        let title = "<a href='api/single-movie?id=" + resultData["id"] + "'>" + resultData["title"] + "<a>";
+        let title = resultData["title"];
+        $('#title').html(title);
         let genre = "";
         for (let j of resultData["genre"]) {
             let param = getParam();
