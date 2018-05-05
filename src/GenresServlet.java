@@ -47,15 +47,7 @@ public class GenresServlet extends HttpServlet {
 
             String header[] = {"id", "name"};
 
-            JsonArray jsonArray = new JsonArray();
-
-            while (rs.next()) {
-                JsonObject jsonObject = new JsonObject();
-                for (String i : header) {
-                    jsonObject.addProperty(i, rs.getString(i));
-                }
-                jsonArray.add(jsonObject);
-            }
+            JsonArray jsonArray = ConvertResultSetToJson.ConvertResultSetToJson(header, rs);
 
             out.write(jsonArray.toString());
 

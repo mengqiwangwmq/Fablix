@@ -80,6 +80,7 @@ function handleMovieResult(resultData, page, num_per_page, sort_by) {
             "                <p>Rating: " + resultData[i]["rating"] + "</p>\n" +
             "                <p>Genre: " + genre + "</p>\n" +
             "                <p>Star: " + star + "</p>\n" +
+            "                <p><a href='javascript:addToCart(\""+resultData[i]["id"]+"\")'>ADD TO CART</p>\n" +
             "              </td>\n" +
             "            </tr>\n";
         rowHTML +=

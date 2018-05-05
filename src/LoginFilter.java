@@ -2,12 +2,13 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
  * Servlet Filter implementation class LoginFilter
  */
-@WebFilter(filterName = "LoginFilter", urlPatterns = "/")
+@WebFilter(filterName = "LoginFilter", urlPatterns = "/*")
 public class LoginFilter implements Filter {
 
     /**
@@ -19,8 +20,9 @@ public class LoginFilter implements Filter {
 
         System.out.println("LoginFilter: " + httpRequest.getRequestURI());
 
+        HttpSession session=httpRequest.getSession();
         // Check if this URL is allowed to access without logging in
-        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
+        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())||session.getAttribute("user")!=null) {
             // Keep default action: pass along the filter chain
             chain.doFilter(request, response);
             return;
