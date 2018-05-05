@@ -10,6 +10,7 @@ function handleSingleMovieResult(resultData, addDelete) {
     // Iterate through resultData, no more than 10 entries
     let title = resultData["title"];
     $('#title').html(title);
+    let id = resultData["id"];
     let genre = "";
     for (let j of resultData["genre"]) {
         let param = getParam();
@@ -24,6 +25,16 @@ function handleSingleMovieResult(resultData, addDelete) {
         let name = resultData["star"][j];
         star += "<a href='single-star.html?id=" + id + "'>" + name + "</a> ";
     }
+    let shopping = "";
+    if (addDelete == 0)
+        shopping = "<a href='javascript:addToCart(\"" + id + "\")'>ADD TO CART</a>";
+    else
+        shopping = "<form id=form_" + id + " onsubmit='changeAmount(\""+id+"\");return false;'>" +
+            "<lable>Amount:</lable>" +
+            "<input id=input_" + id + " value=0 />" +
+            "</form>" +
+            "<a href='javascript:deleteFromCart(\"" + id + "\")'>DELETE FROM CART" + "</a>\n";
+
 
     // Concatenate the html tags with resultData jsonObject
     let rowHTML =
@@ -55,11 +66,7 @@ function handleSingleMovieResult(resultData, addDelete) {
         "                <p>Rating: " + resultData["rating"] + "</p>\n" +
         "                <p>Genre: " + genre + "</p>\n" +
         "                <p>Star: " + star + "</p>\n" +
-        "                <p>" +
-        (addDelete == 0 ?
-            "<a href='javascript:addToCart(\""+resultData["id"]+"\")'>ADD TO CART":
-            "<a href='javascript:deleteFromCart(\""+resultData["id"]+"\")'>DELETE FROM CART") +
-        "</a></p>\n" +
+        "                <p>" + shopping + "</p>\n" +
         "              </td>\n" +
         "            </tr>\n";
     rowHTML +=
@@ -80,11 +87,11 @@ function handleSingleMovieResult(resultData, addDelete) {
 
 }
 
-function addToCart(id){
-    $.get("api/shopping-cart?Item="+id.toString()+"&method=add");
+function addToCart(id) {
+    $.get("api/shopping-cart?item=" + id.toString() + "&method=add");
 }
 
-function deleteFromCart(id){
-    $.get("api/shopping-cart?Item="+id.toString()+"&method=delete");
+function deleteFromCart(id) {
+    $.get("api/shopping-cart?item=" + id.toString() + "&method=delete");
     location.reload();
 }

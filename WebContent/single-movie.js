@@ -5,8 +5,6 @@ function handleMovieResult(resultData) {
     let movieTableBodyElement = jQuery("#movie_table_body");
     movieTableBodyElement.empty();
     handleSingleMovieResult(resultData,0);
-    // Append the row created to the table body, which will refresh the page
-    movieTableBodyElement.append(rowHTML);
 }
 
 let id = getParam().get("id");
