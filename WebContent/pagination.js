@@ -9,11 +9,10 @@ function defaultPage(page, num_per_page) {
 }
 
 function stringPage(string, page, num_per_page) {
-    let param=getParam();
-    param.set("page",page);
-    param.set("num_per_page",num_per_page);
-    //alert(paramToUrl(param));
-    return "<a href='" +urlWithoutParam()+paramToUrl(param)+"'>" +
+    let param = getParam();
+    param.set("page", page);
+    param.set("num_per_page", num_per_page);
+    return "<a href='" + urlWithoutParam() + paramToUrl(param) + "'>" +
         string +
         "</a> ";
 }
@@ -25,7 +24,7 @@ function pagination(page, num_per_page, num_page) {
     gotoElement.empty();
     let rowHtml = "";
     let start = page - 4 <= 1 ? 1 : (page - 4 <= num_page - 9 ? page - 4 : num_page - 9);
-    let end = page + 4 <= 9 ? 9 : (page + 4 <= num_page ? page + 4 : num_page);
+    let end = page + 4 >= num_page ? num_page : (page + 4 <= 9 ? 9 : page + 4);
     let firstMostHtml = page - 5 >= 1 ? stringPage("First", 1, num_per_page) : "";
     let lastMostHtml = page + 5 <= num_page ? stringPage("Last", num_page, num_per_page) : "";
 
@@ -38,8 +37,10 @@ function pagination(page, num_per_page, num_page) {
         else
             rowHtml += defaultPage(i, num_per_page);
     }
-    for (let i = 1; i < num_page; ++i) {
-        let iStr = i==null?"1":i.toString();
+    if(num_page==0)
+        gotoElement.append("<option value='1' selected='selected'>1</option>\n");
+    else for (let i = 1; i <= num_page; ++i) {
+        let iStr = (i == null ? "1" : i.toString());
         if (i == page)
             gotoElement.append("<option value='" + iStr + "' selected='selected'>" + iStr + "</option>\n");
         else

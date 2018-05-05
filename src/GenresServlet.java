@@ -18,8 +18,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.sql.DataSource;
 
-@WebServlet(name = "MoviesServlet", urlPatterns = "/api/movies")
-public class MoviesServlet extends HttpServlet {
+@WebServlet(name = "GenresServlet", urlPatterns = "/api/genres")
+public class GenresServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Resource(name = "jdbc/moviedb")
@@ -33,40 +33,31 @@ public class MoviesServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
 
-        String pg = request.getParameter("page");
-        int page = Integer.parseInt(pg);
-        int num_per_page = Integer.parseInt(request.getParameter("num_per_page"));
-        String sort_by = request.getParameter("sort_by");
-
         PrintWriter out = response.getWriter();
 
         try {
             Connection conn = dataSource.getConnection();
             Statement statement = conn.createStatement();
-            String query = "SELECT COUNT(id) AS num FROM movies";
+            String query = "SELECT COUNT(id) AS num FROM genres";
             ResultSet rs = statement.executeQuery(query);
             rs.next();
-            int num=rs.getInt("num");
-            int numPg=num/num_per_page;
-            query = "SELECT m.id AS id, title, year, director, rating " +
-                    "FROM (movies AS m INNER JOIN ratings AS r ON m.id=r.movieId) " +
-                    "ORDER BY " + sort_by + " DESC " +
-                    "LIMIT " + String.valueOf(num_per_page) + " offset " + String.valueOf(page*num_per_page);
+            query = "SELECT id, name " +
+                    "FROM genres ";
             rs = statement.executeQuery(query);
 
-            String header[] = {"id", "title", "year", "director", "rating"};
+            String header[] = {"id", "name"};
 
-            JsonArray jsonArray=ConvertResultSetToJson.ConvertResultSetToJson(header,rs);
+            JsonArray jsonArray = new JsonArray();
 
-            for (JsonElement i : jsonArray)
-                GetMovieGenreStar.GetMovieGenreStar(i.getAsJsonObject(), conn);
+            while (rs.next()) {
+                JsonObject jsonObject = new JsonObject();
+                for (String i : header) {
+                    jsonObject.addProperty(i, rs.getString(i));
+                }
+                jsonArray.add(jsonObject);
+            }
 
-            JsonObject responseObject = new JsonObject();
-            responseObject.add("content", jsonArray);
-            responseObject.addProperty("page", page);
-            responseObject.addProperty("num_page", numPg);
-            responseObject.addProperty("num_per_page", num_per_page);
-            out.write(responseObject.toString());
+            out.write(jsonArray.toString());
 
             rs.close();
             statement.close();

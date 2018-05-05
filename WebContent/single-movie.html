@@ -98,65 +98,6 @@
           <tbody id="movie_table_body">
           </tbody>
           <tbody>
-          <!--分页-->
-          <tbody>
-          <!--空行-->
-          <tr>
-            <td height="30"></td>
-          </tr>
-          <!--页码-->
-          <tr>
-            <td id="pagination" align="center" width="350px"></td>
-          </tr>
-          <!--空行-->
-          <tr>
-            <td height="30"></td>
-          </tr>
-          <tr>
-            <td>
-              <table align="right">
-                <tbody>
-                <tr>
-                  <!--每页显示数量-->
-                  <td>
-                    <form class="noborder" onsubmit="update();return false;">
-                      <font size="0.5em">Show </font>
-                      <input id=num_per_page style="width: 20px"/>
-                      <font size="0.5em"> Movies per Page | </font>
-                    </form>
-                  </td>
-                  <!--排序方式-->
-                  <td>
-                    <font size="0.5em">Sorted by </font>
-                    <select id="sort_by" onchange="update();">
-                      <option>Rating</option>
-                      <option>Title</option>
-                    </select>
-                    <font size="0.5em"> | </font>
-                  </td>
-                  <!--浏览方式-->
-                  <td>
-                    <font size="0.5em">Browse </font>
-                    <select id="browse" onchange="updateBrowse();">
-                      <option>All</option>
-                      <option>Genre</option>
-                      <option>Alphabet</option>
-                    </select>
-                    <font size="0.5em"> | </font>
-                  </td>
-                  <!--跳转到任意页-->
-                  <td>
-                    <font size="0.5em">
-                      Go to Page:
-                    </font>
-                    <select id=gotoPage onchange="update();"></select>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
-          </tbody>
           <!--空行-->
           <tr>
             <td height="70"></td>
@@ -185,7 +126,6 @@
 <!-- Note the url does not contain a "/" in the beginning, which means the url is relative to current path
      otherwise the url is relative to the root path-->
 <script src="param.js"></script>
-<script src="movies.js"></script>
-<script src="pagination.js"></script>
+<script src="single-movie.js"></script>
 </body>
 </html>

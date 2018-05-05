@@ -15,7 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-@WebServlet(name = "MoviesServlet", urlPatterns = "/api/movies-genre")
+@WebServlet(name = "MoviesGenreServlet", urlPatterns = "/api/movies-genre")
 public class MoviesGenreServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -47,55 +47,37 @@ public class MoviesGenreServlet extends HttpServlet {
             rs.next();
             String genre_id = rs.getString("id");
 
+            query = "SELECT COUNT(*) AS num " +
+                    "FROM movies AS m INNER JOIN genres_in_movies AS gm ON m.id=gm.movieId " +
+                    "WHERE gm.genreId='" + genre_id + "'";
+            rs = statement.executeQuery(query);
+            rs.next();
+            int num = rs.getInt("num");
+            int numPg = num / num_per_page;
+
             query = "SELECT m.id AS id, title, year, director, rating " +
                     "FROM (movies AS m INNER JOIN ratings AS r ON m.id=r.movieId) " +
                     "INNER JOIN genres_in_movies AS gm ON m.id=gm.movieId " +
                     "WHERE gm.genreId=" + genre_id + " " +
                     "ORDER BY " + sort_by + " DESC " +
-                    "LIMIT " + String.valueOf(num_per_page) + " offset " + String.valueOf(page);
+                    "LIMIT " + String.valueOf(num_per_page) + " offset " + String.valueOf(page * num_per_page);
             rs = statement.executeQuery(query);
 
             String header[] = {"id", "title", "year", "director", "rating"};
 
             JsonArray jsonArray = new JsonArray();
 
-            int num = 0;
             while (rs.next()) {
                 JsonObject jsonObject = new JsonObject();
                 for (String i : header) {
                     jsonObject.addProperty(i, rs.getString(i));
                 }
                 jsonArray.add(jsonObject);
-                ++num;
             }
-            int numPg = num / num_per_page;
 
-            query = "SELECT g.name AS genre " +
-                    "FROM genres_in_movies AS gm INNER JOIN genres AS g ON gm.genreId=g.id " +
-                    "WHERE gm.movieId=? ";
-            PreparedStatement genreStatement = conn.prepareStatement(query);
-            query = "SELECT s.name AS star " +
-                    "FROM stars_in_movies AS sm INNER JOIN stars AS s ON sm.starId=s.id " +
-                    "WHERE sm.movieId=? ";
-            PreparedStatement starStatement = conn.prepareStatement(query);
-            for (JsonElement i : jsonArray) {
-                JsonObject jsonObject = i.getAsJsonObject();
-                String movieId = jsonObject.get("id").getAsString();
+            for (JsonElement i : jsonArray)
+                GetMovieGenreStar.GetMovieGenreStar(i.getAsJsonObject(), conn);
 
-                genreStatement.setString(1, movieId);
-                rs = genreStatement.executeQuery();
-                JsonArray movie_genre = new JsonArray();
-                while (rs.next())
-                    movie_genre.add(rs.getString("genre"));
-                jsonObject.add("genre", movie_genre);
-
-                starStatement.setString(1, movieId);
-                rs = starStatement.executeQuery();
-                JsonArray star = new JsonArray();
-                while (rs.next())
-                    star.add(rs.getString("star"));
-                jsonObject.add("star", star);
-            }
             JsonObject responseObject = new JsonObject();
             responseObject.add("content", jsonArray);
             responseObject.addProperty("page", page);

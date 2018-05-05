@@ -25,6 +25,7 @@ function handleMovieResult(resultData, page, num_per_page, sort_by) {
 
     //page=resultData["page"];
     let num_page = parseInt(resultData["num_page"]);
+    //alert(num_page);
     page = parseInt(page);
     num_per_page = parseInt(num_per_page);
     resultData = resultData["content"];
@@ -33,13 +34,22 @@ function handleMovieResult(resultData, page, num_per_page, sort_by) {
 
     // Iterate through resultData, no more than 10 entries
     for (let i = 0; i < Math.min(10, resultData.length); i++) {
+        let title = "<a href='single-movie.html?id=" + resultData[i]["id"] + "'>" + resultData[i]["title"] + "<a>";
         let genre = "";
         for (let j of resultData[i]["genre"]) {
             let param = getParam();
-            param.set("where", "genre:" + j);
+            param.set("genre", j);
             param.set("page", "1");
+            param.set("browse", "Genre");
             genre += "<a href='" + urlWithoutParam() + paramToUrl(param) + "'>" + j + "</a> ";
         }
+        let star = "";
+        for (let j in resultData[i]["star"]) {
+            let id = resultData[i]["starId"][j];
+            let name = resultData[i]["star"][j];
+            star += "<a href='single-star.html?id=" + id + "'>" + name + "</a> ";
+        }
+
         // Concatenate the html tags with resultData jsonObject
         let rowHTML =
             "<tr>\n" +
@@ -56,9 +66,7 @@ function handleMovieResult(resultData, page, num_per_page, sort_by) {
             "            <tbody>\n";
         rowHTML +=
             "            <tr>\n" +
-            "              <td class=\"sub_text\">" +
-            "                <a>" + resultData[i]["title"] + "</a>" +
-            "              </td>\n" +
+            "              <td class=\"sub_text\">" + title + "</td>\n" +
             "            </tr>\n";
         rowHTML +=
             "            <tr>\n" +
@@ -71,7 +79,7 @@ function handleMovieResult(resultData, page, num_per_page, sort_by) {
             "                <p>Director: " + resultData[i]["director"] + "</p>\n" +
             "                <p>Rating: " + resultData[i]["rating"] + "</p>\n" +
             "                <p>Genre: " + genre + "</p>\n" +
-            "                <p>Star: " + resultData[i]["star"] + "</p>\n" +
+            "                <p>Star: " + star + "</p>\n" +
             "              </td>\n" +
             "            </tr>\n";
         rowHTML +=
@@ -93,12 +101,25 @@ function handleMovieResult(resultData, page, num_per_page, sort_by) {
     pagination(page, num_per_page, num_page);
 }
 
+function handleGenreResult(resultData) {
+    let categoriedElement = $('#categories');
+    for (let i of resultData) {
+        let rowHtml = "";
+        let param = getParam();
+        param.set("genre", i["name"]);
+        param.set("browse", "Genre");
+        param.set("page", 1);
+        rowHtml += "<a href='" + urlWithoutParam() + paramToUrl(param) + "'>" + i["name"] + "</a> ";
+        categoriedElement.append(rowHtml);
+    }
+}
+
 
 let param = getParam();
 let page = 1;
 let num_per_page = 20;
 let sort_by = "rating";
-let where = ""
+let browse = "All";
 
 if (param != null) {
     let tmp = param.get("page");
@@ -110,45 +131,90 @@ if (param != null) {
     tmp = param.get("sort_by");
     if (tmp != null)
         sort_by = tmp;
-    tmp = param.get("where");
+    tmp = param.get("browse");
     if (tmp != null)
-        where = tmp;
+        browse = tmp;
 }
 $("#num_per_page").attr("value", num_per_page);
-$('#sort_by').find("[value=" + sort_by + "]").attr("selected", "selected");
+$('#sort_by').find("option:contains(" + sort_by + ")").attr("selected", "selected");
+$('#browse').find("option:contains(" + browse + ")").attr("selected", "selected");
 
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
 // Makes the HTTP GET request and registers on success callback function handleMovieResult
-if (where === "")
+if (browse === "All") {
+
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
         url: "api/movies?page=" + page + "&num_per_page=" + num_per_page + "&sort_by=" + sort_by, // Setting request url, which is mapped by StarsServlet in Stars.java
         success: (resultData) => handleMovieResult(resultData, page, num_per_page, sort_by) // Setting callback function to handle data returned successfully by the StarsServlet
     });
-else {
-    let tmp = where.split(":");
-    let key = tmp[0];
-    let val = tmp[1];
-    $('#SubTitle').html(val.toUpperCase()+" MOVIES");
-    //alert($('#SubTitle').val());
-    if (key === "genre") {
+}
+else if (browse === "Genre") {
+    let val = param.get("genre");
+    jQuery.ajax({
+        dataType: "json",
+        method: "GET",
+        url: "api/genres?page=" + page + "&num_per_page=" + num_per_page,
+        success: (resultData) => handleGenreResult(resultData, page, num_per_page, sort_by)
+    });
+    if (val != null) {
+        $('#SubTitle').html(val.toUpperCase() + " MOVIES");
         jQuery.ajax({
             dataType: "json",
             method: "GET",
             url: "api/movies-genre?page=" + page + "&num_per_page=" + num_per_page + "&sort_by=" + sort_by + "&genre=" + val,
             success: (resultData) => handleMovieResult(resultData, page, num_per_page, sort_by)
         });
+    } else
+        $('#SubTitle').html("GENRES");
+} else if (browse === "Alphabet") {
+    let val = param.get("alphabet");
+    $('#SubTitle').html('ALPHABETS');
+    for (let i = 0; i < 25; i++) {
+        let tmp = String.fromCharCode((65 + i));
+        let param = getParam();
+        param.set("alphabet", tmp);
+        param.set("page", 1);
+        let href = "<a href='" + urlWithoutParam() + paramToUrl(param) + "'>";
+        href += tmp + "</a> "
+        $('#categories').append(href);
+    }
+    if (val != null) {
+        jQuery.ajax({
+            dataType: "json",
+            method: "GET",
+            url: "api/movies-alphabet?page=" + page + "&num_per_page=" + num_per_page + "&sort_by=" + sort_by + "&alphabet=" + val,
+            success: (resultData) => handleMovieResult(resultData, page, num_per_page, sort_by)
+        })
     }
 }
 
 
 function update() {
     let param = getParam();
+
     let page = $('#gotoPage').find('option:selected').val();
-    param.set("page", page);
+    if (page != null)
+        param.set("page", page);
+
+    let num_per_page = $('#num_per_page').val();
+    if (num_per_page != null && num_per_page > 0)
+        param.set("num_per_page", num_per_page);
+
+    let sort_by = $('#sort_by').find('option:selected').val();
+    if (sort_by != null)
+        param.set("sort_by", sort_by);
+    //alert(paramToUrl(param));
+    //alert(urlWithoutParam());
+    window.location.href = urlWithoutParam() + paramToUrl(param);
+}
+
+function updateBrowse() {
+    let param = new Map();
+    param.set("browse", $('#browse').find('option:selected').val());
     let num_per_page = $('#num_per_page').val();
     param.set("num_per_page", num_per_page);
     let sort_by = $('#sort_by').find('option:selected').val();
