@@ -42,17 +42,13 @@ public class ShoppingCartServlet extends HttpServlet {
                         previousItems.put(item, previousItems.get(item) + 1);
                     else previousItems.put(item, 1); // Add the new item to the previousItems ArrayList
                 } else if (method.equals("delete")) {
-                    if (previousItems.get(item) <= 1)
-                        previousItems.remove(item);
-                    else previousItems.put(item, previousItems.get(item) - 1);
+                    previousItems.remove(item);
                 } else if (method.equals("amount")) {
-                    String amountStr=request.getParameter("amount");
-                    int amount=Integer.parseInt(amountStr);
+                    String amountStr = request.getParameter("amount");
+                    int amount = Integer.parseInt(amountStr);
                     previousItems.put(item, amount);
                 }
             }
-        }
-        synchronized (previousItems){
             // boolean a = method.equals("delete");
             for (String i : previousItems.keySet()) {
                 JsonObject jsonObject = new JsonObject();

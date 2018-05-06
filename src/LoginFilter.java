@@ -20,9 +20,9 @@ public class LoginFilter implements Filter {
 
         System.out.println("LoginFilter: " + httpRequest.getRequestURI());
 
-        HttpSession session=httpRequest.getSession();
+        HttpSession session = httpRequest.getSession();
         // Check if this URL is allowed to access without logging in
-        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())||session.getAttribute("user")!=null) {
+        if (session.getAttribute("user") != null||this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
             // Keep default action: pass along the filter chain
             chain.doFilter(request, response);
             return;
@@ -30,7 +30,7 @@ public class LoginFilter implements Filter {
 
         // Redirect to login page if the "user" attribute doesn't exist in session
         if (httpRequest.getSession().getAttribute("user") == null) {
-            httpResponse.sendRedirect("login.html");
+            httpResponse.sendRedirect("/login.html");
         } else {
             chain.doFilter(request, response);
         }
@@ -41,9 +41,18 @@ public class LoginFilter implements Filter {
     // You might also want to allow some CSS files, etc..
     private boolean isUrlAllowedWithoutLogin(String requestURI) {
         requestURI = requestURI.toLowerCase();
-
-        return requestURI.endsWith("login.html") || requestURI.endsWith("login.js")
-                || requestURI.endsWith("api/login");
+        if(requestURI.endsWith("generate-header.js")||requestURI.endsWith("home.css"))
+            return true;
+        String[] urlSplit = requestURI.split("/");
+        for (String i : urlSplit) {
+            if (i.equals("images"))
+                return true;
+            String[] tmp = i.split("\\.");
+            for(String k:tmp)
+                if(k.equals("login"))
+                    return true;
+        }
+        return false;
     }
 
     /**

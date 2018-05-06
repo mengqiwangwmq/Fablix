@@ -115,5 +115,29 @@ td.ser_text {
     font-size: 0.9em;
     font-family: Tahoma;
     line-height: 1.8em;
-    word-wrap:break-word;
+    word-wrap: break-word;
+}
+
+.line {
+    color: #fff;
+    font-family: Tahoma;
+    font-size: 1.6em;
+    font-weight: bold;
+    line-height: 1.5em;
+    text-align: center;
+    text-decoration: none;
+}
+
+.button {
+    background: var(--maincolor);
+    padding: 8px 10px;
+    border: 2px solid var(--maincolor);
+    border-image: none;
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.lable{
+    text-align: left;
 }

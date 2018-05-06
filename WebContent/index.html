@@ -1,12 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="home.css" rel="stylesheet" type="text/css">
+  <title>Index</title>
+</head>
 
-<html>
 <body>
-<h2>Hello World!</h2>
-<a href="stars.html">stars</a><br/>
-<a href="movies.html">movies</a><br/>
-<a href="movies.html?browse=Genre">genres</a><br/>
-<a href="movies.html?browse=Alphabet">movies in alphabet</a><br/>
-<a href="shopping-cart.html">shopping cart</a><br/>
-<a href="login.html">login</a>
+
+
+<div width="100%" align="center" valign="top">
+  <table width="800" border="0" cellpadding="0" cellspacing="0" align="center"
+         class="container top-header-left">
+    <tbody>
+    <!--top margin 顶部空格-->
+    <tr>
+      <td height="60"></td>
+    </tr>
+
+    <!-- 头 header -->
+    <tr>
+      <td id="header"></td>
+    </tr>
+
+    <!-- 内容 main -->
+    <tr bgcolor="#ffffff">
+      <td>
+        <table id=star_table class="container-middle">
+          <tbody>
+          <!--顶部空格 top margin-->
+          <tr>
+            <td class="ser_pad"></td>
+          </tr>
+          <!-- 标题 title -->
+          <tr>
+            <td id="SubTitle" class="wel_text">INDEX</td>
+          </tr>
+          <!--分割线图-->
+          <tr>
+            <td align="center">
+              <img src="images/sub-log.png" alt=" " width="160" height="auto">
+            </td>
+          </tr>
+          <!--空行-->
+          <tr>
+            <td height="50"></td>
+          </tr>
+          </tbody>
+          <!--类目（首字母、流派等）-->
+          <tbody class="noborder">
+          <tr>
+            <td id="categories"></td>
+          </tr>
+          </tbody>
+          <!--页面跳转-->
+          <tbody>
+          <tr>
+            <td>
+              <a href="stars.html">stars</a><br/>
+              <a href="movies.html">movies</a><br/>
+              <a href="movies.html?browse=Genre">genres</a><br/>
+              <a href="movies.html?browse=Alphabet">movies in alphabet</a><br/>
+              <a href="shopping-cart.html">shopping cart</a><br/>
+              <a href="javascript:logout()">logout</a>
+            </td>
+          </tr>
+          </tbody>
+          <!--空行-->
+          <tbody>
+          <tr>
+            <td height="70"></td>
+          </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+    <!--bottom margin 底部空格-->
+    <tr>
+      <td class="ser_pad"></td>
+    </tr>
+    </tbody>
+  </table>
+  <tr>
+    <td height=" 60"></td>
+  </tr>
+</div>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="generate-header.js"></script>
+<script src="logout.js"></script>
 </body>
 </html>

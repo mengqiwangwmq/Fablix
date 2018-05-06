@@ -23,45 +23,7 @@
 
     <!-- 头 header -->
     <tr>
-      <td>
-        <table class="ban">
-          <!--head part-->
-          <tr>
-            <td>
-              <table class="ban_text one mainContent">
-                <!--top margin 顶部空格-->
-                <tr>
-                  <td class="top-text" height="40"></td>
-                </tr>
-                <!--big title-->
-                <tr align="center">
-                  <td>
-                    <a class="log" href="index.html">
-                      A Website
-                      <img src="images/logo.png"
-                           style="display:inline-block;vertical-align:top;width:40px;height:auto;">
-                    </a>
-                  </td>
-                </tr>
-                <!--间隔-->
-                <tr>
-                  <td height="15"></td>
-                </tr>
-                <!--description-->
-                <tr align="center">
-                  <td class="line"><span
-                      style="color:#fff;font-family: Tahoma;font-size:1.6em;font-weight:bold;line-height:1.5em;text-align:center;text-decoration:none;">In some degree a movie website...</span>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <!--间隔-->
-          <tr>
-            <td class="l-bottom"></td>
-          </tr>
-        </table>
-      </td>
+      <td id="header"></td>
     </tr>
 
     <!-- 内容 main -->
@@ -98,7 +60,7 @@
           <tbody id="movie_table_body">
           </tbody>
           <tbody>
-          <!--分页-->
+          <!--分页与跳转-->
           <tbody>
           <!--空行-->
           <tr>
@@ -117,11 +79,17 @@
               <table align="right">
                 <tbody>
                 <tr>
+                  <!--跳转到主页-->
                   <td>
-                    <font size="0,5em"><a href="index.html">Index</a>  |  </font>
+                    <font size="0,5em"><a href="index.html">Index</a> | </font>
                   </td>
+                  <!--跳转到stars-->
                   <td>
-                    <font size="0.5em"><a href="stars.html">Stars</a>  |  </font>
+                    <font size="0.5em"><a href="stars.html">Stars</a> | </font>
+                  </td>
+                  <!--跳转到购物车-->
+                  <td>
+                    <font size="0.5em"><a href="shopping-cart.html">Check Out</a> | </font>
                   </td>
                   <!--每页显示数量-->
                   <td>
@@ -190,6 +158,7 @@
 <!-- The path is relative to index.html, since these two files are in the same directory -->
 <!-- Note the url does not contain a "/" in the beginning, which means the url is relative to current path
      otherwise the url is relative to the root path-->
+<script src="generate-header.js"></script>
 <script src="param.js"></script>
 <script src="movies.js"></script>
 <script src="pagination.js"></script>

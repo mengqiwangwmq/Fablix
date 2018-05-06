@@ -43,4 +43,3 @@ function submitLoginForm(formSubmitEvent) {
 
 // Bind the submit action of the form to a handler function
 jQuery("#login_form").submit((event) => submitLoginForm(event));
-

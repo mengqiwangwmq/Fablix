@@ -43,6 +43,7 @@ public class SingleMovieServlet extends HttpServlet {
             String query = "SELECT m.id AS id, title, year, director, rating " +
                     "FROM (movies AS m INNER JOIN ratings AS r ON m.id=r.movieId) " +
                     "WHERE m.id='" + id + "'";
+
             ResultSet rs = statement.executeQuery(query);
 
             String header[] = {"id", "title", "year", "director", "rating"};

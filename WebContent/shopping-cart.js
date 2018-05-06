@@ -1,4 +1,4 @@
-function handleResult(resultData) {
+function handleShoppingCartResult(resultData) {
     $('#movie_table_body').empty();
     for (let i of resultData) {
         let id=i["id"];
@@ -19,7 +19,7 @@ jQuery.ajax({
     dataType: "json",
     method: "GET",
     url: "api/shopping-cart",
-    success: (resultData) => handleResult(resultData)
+    success: (resultData) => handleShoppingCartResult(resultData)
 });
 
 function changeAmount(id){
@@ -28,6 +28,6 @@ function changeAmount(id){
         dataType: "json",
         method: "GET",
         url: "api/shopping-cart",
-        success: (resultData) => handleResult(resultData)
+        success: (resultData) => handleShoppingCartResult(resultData)
     });
 }

@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Shopping Cart</title>
-  <!-- Custom Theme files -->
+  <meta charset="UTF-8">
   <link href="home.css" rel="stylesheet" type="text/css">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <!-- //Custom Theme files -->
-  <!-- Responsive Styles and Valid Styles -->
-
+  <title>Customer Information</title>
 </head>
-
 <body>
+
 <div width="100%" align="center" valign="top">
   <table width="800" border="0" cellpadding="0" cellspacing="0" align="center"
          class="container top-header-left">
@@ -36,7 +32,7 @@
           </tr>
           <!-- 标题 title -->
           <tr>
-            <td id="SubTitle" class="wel_text">SHOPPING CART</td>
+            <td id="SubTitle" class="wel_text">CUSTOMER INFORMATION</td>
           </tr>
           <!--分割线图-->
           <tr>
@@ -49,14 +45,32 @@
             <td height="50"></td>
           </tr>
           </tbody>
-          <!--类目（首字母、流派等）-->
+          <!--表格--><!--表格--><!--表格--><!--表格--><!--表格-->
           <tbody>
           <tr>
-            <td id="categories"></td>
+            <td>
+              <form id="information" onsubmit="confirm();return false;">
+                <table align="center">
+                  <tr>
+                    <td class="lable"><label>Credit Card: </label></td>
+                    <td><input id="credit_card"/></td>
+                  </tr>
+                  <tr>
+                    <td class="lable"><label>Expire Date: </label></td>
+                    <td><input id="expire_date"/><br/></td>
+                  </tr>
+                  <tr>
+                    <td class="lable"><label>First Name: </label></td>
+                    <td><input id="first_name"/><br/></td>
+                  </tr>
+                  <tr>
+                    <td class="lable"><label>Last Name: </label></td>
+                    <td><input id="last_name"/></td>
+                  </tr>
+                </table>
+              </form>
+            </td>
           </tr>
-          </tbody>
-          <!--表格--><!--表格--><!--表格--><!--表格--><!--表格-->
-          <tbody id="movie_table_body">
           </tbody>
           <!--继续付款-->
           <tbody>
@@ -66,7 +80,8 @@
           </tr>
           <tr>
             <td height="30" align="center" style="padding: 0px; color: rgb(255, 255, 255); font-family: Tahoma; font-size: 0.9em;">
-              <a class="button" href="customer-information.html"> CONTINUE </a>
+              <a class="button" href="shopping-cart.html"> BACK </a>
+              <a class="button" href="javascript:confirm()"> CONTINUE </a>
             </td>
           </tr>
           </tbody>
@@ -125,8 +140,7 @@
      otherwise the url is relative to the root path-->
 <script src="generate-header.js"></script>
 <script src="param.js"></script>
-<script src="shopping-cart.js"></script>
 <script src="handle-single-movie.js"></script>
-<script src="pagination.js"></script>
+<script src="customer-information.js"></script>
 </body>
 </html>

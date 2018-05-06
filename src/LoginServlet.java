@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
             // Get a connection from dataSource
             Connection conn = dataSource.getConnection();
 
-            String query = "SELECT * FROM users WHERE username=?";
+            String query = "SELECT * FROM customers WHERE email=?";
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, username);
             ResultSet rs = statement.executeQuery();
@@ -49,7 +49,7 @@ public class LoginServlet extends HttpServlet {
                     // Login success:
 
                     // set this user into the session
-                    request.getSession().setAttribute("user", new User(username));
+                    request.getSession().setAttribute("user", new User(rs.getString("id")));
 
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
@@ -63,7 +63,9 @@ public class LoginServlet extends HttpServlet {
                 responseJsonObject.addProperty("status", "fail");
                 responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
             }
-
+            rs.close();
+            statement.close();
+            conn.close();
         } catch (Exception e) {
             out.write(e.toString());
         }
