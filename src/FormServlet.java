@@ -32,16 +32,16 @@ public class FormServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        response.setContentType("text/html");    // Response mime type
+        response.setContentType("application/json");    // Response mime type
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
         // Building page head with title
-        out.println("<html><head><title>MovieDB: Found Records</title></head>");
+        //out.println("<html><head><title>MovieDB: Found Records</title></head>");
 
         // Building page body
-        out.println("<body><h1>MovieDB: Found Records</h1>");
+        //out.println("<body><h1>MovieDB: Found Records</h1>");
 
 
         try {
@@ -52,7 +52,7 @@ public class FormServlet extends HttpServlet {
             // Declare a new statement
             Statement statement = dbCon.createStatement();
 
-            // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
+            // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in Search.html
             String name = request.getParameter("name");
             String []tokens = name.split(" ");
             // Generate a SQL query
@@ -68,9 +68,9 @@ public class FormServlet extends HttpServlet {
                 }
                 myQuery += String.format("concat(title,year,director,name) like '%s' or ",tokens[i]);
             }
-            String query = String.format("SELECT distinct title, year, director from movies, stars_in_movies, stars" +
+            String query = String.format("SELECT distinct movies.id,title, year, director from movies, stars_in_movies, stars" +
                             " where (%s)" +
-                            " and movies.id = stars_in_movies.movieId and stars.id = stars_in_movies.starId"
+                            " and movies.id = stars_in_movies.movieId and stars.id = stars_in_movies.starId limit 6"
                     ,myQuery);
 
 
@@ -80,12 +80,13 @@ public class FormServlet extends HttpServlet {
             JsonArray Map = new JsonArray();
             //ArrayList<Map> Map = new ArrayList<>();
             // Create a html <table>
-            out.println("<table border>");
+            //out.println("<table border>");
 
             // Iterate through each row of rs and create a table row <tr>
-            out.println("<tr><td>Title</td><td>Year</td><td>Director</td><td>Stars</td><td>Genres</td></tr>");
+            //out.println("<tr><td>Title</td><td>Year</td><td>Director</td><td>Stars</td><td>Genres</td></tr>");
             while (rs.next()) {
                 JsonObject tmpMap = new JsonObject();
+                tmpMap.addProperty("id",rs.getString("movies.id"));
                 tmpMap.addProperty("title", rs.getString("title"));
                 tmpMap.addProperty("year", rs.getString("year"));
                 tmpMap.addProperty("director", rs.getString("director"));
@@ -116,7 +117,7 @@ public class FormServlet extends HttpServlet {
                         //(String)i.get("director"),(String)i.get("stars"),(String)i.get("genres")));
             }
             out.println(Map.toString());
-            out.println("</table>");
+            //out.println("</table>");
 
 
             // Close all structures
@@ -127,7 +128,7 @@ public class FormServlet extends HttpServlet {
         } catch (Exception ex) {
 
             // Output Error Massage to html
-            out.println(String.format("<html><head><title>MovieDB: Error</title></head>\n<body><p>SQL error in doGet: %s</p></body></html>", ex.getMessage()));
+            //out.println(String.format("<html><head><title>MovieDB: Error</title></head>\n<body><p>SQL error in doGet: %s</p></body></html>", ex.getMessage()));
             return;
         }
         out.close();

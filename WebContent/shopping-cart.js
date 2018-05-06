@@ -12,6 +12,7 @@ function handleShoppingCartResult(resultData) {
         });
         $('#input_'+id).attr("value",amount);
     }
+    if(resultData.length==0) $('#continue').attr("href","");
     pagination();
 }
 

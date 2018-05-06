@@ -39,7 +39,7 @@ public class GetTransactionsSerlvet extends HttpServlet {
         PrintWriter out = response.getWriter();
         try {
             Connection conn = dataSource.getConnection();
-            String query = "SELECT * FROM sales AS s INNER JOIN movie AS m ON s.movieId=m.id WHERE s.id=?";
+            String query = "SELECT * FROM sales AS s INNER JOIN movies AS m ON s.movieId=m.id WHERE s.id=?";
             PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             HashMap<String,ArrayList<String>> map=new HashMap<>();
             for (String i : ids) {
