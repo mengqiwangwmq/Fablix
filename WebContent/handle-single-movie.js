@@ -26,15 +26,17 @@ function handleSingleMovieResult(resultData, addDelete) {
         let name = resultData["star"][j];
         star += "<a href='single-star.html?id=" + id + "'>" + name + "</a> ";
     }
-    let shopping = "";
-    if (addDelete == 0)
+    let shopping;
+    if (addDelete == 0)//add
         shopping = "<a href='javascript:addToCart(\"" + id + "\")'>ADD TO CART</a>";
-    else
+    else if (addDelete == 1)//delete
         shopping = "<form id=form_" + id + " onsubmit='changeAmount(\"" + id + "\");return false;'>" +
             "<lable>Amount:</lable>" +
             "<input id=input_" + id + " value=0 />" +
             "</form>" +
             "<a href='javascript:deleteFromCart(\"" + id + "\")'>DELETE FROM CART" + "</a>\n";
+    else if (addDelete == -1)//nothing
+        shopping = "Amount: <span id='amount_" + id + "'></span></p><p>id: <span id='id_" + id + "'>";
 
 
     // Concatenate the html tags with resultData jsonObject
