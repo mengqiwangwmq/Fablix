@@ -12,6 +12,7 @@ function getParam() {
 }
 
 function paramToUrl(param) {
+    if(param==null) return "";
     let tmp = "?";
     param.forEach((item, key, mapObj) => {
         tmp += key + "=" + item + "&";

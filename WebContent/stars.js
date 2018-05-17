@@ -41,6 +41,13 @@ function handleStarResult(resultData) {
     }
 }
 
+function submitSearchStar(formSubmitEvent){
+    $.get(
+        "stars.html",
+        $('#search_star').serialize()
+    )
+}
+
 
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
@@ -50,6 +57,8 @@ function handleStarResult(resultData) {
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "api/stars", // Setting request url, which is mapped by StarsServlet in Stars.java
+    url: "api/stars"+paramToUrl(getParam()), // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleStarResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
+
+$('#search_star').submit((event)=>submitSearchStar(event));

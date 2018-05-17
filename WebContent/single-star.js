@@ -32,17 +32,18 @@ function handleSingleStarResult(resultData) {
     let movieTableBodyElement = jQuery("#movie_table_body");
 
     // Concatenate the html tags with resultData jsonObject to create table rows
-    for (let i = 0; i < Math.min(10, resultData.length); i++) {
-        let rowHTML = "";
-        rowHTML += "<tr>";
-        rowHTML += "<th><a href='single-movie.html?id="+resultData[i]["movie_id"]+"'>" + resultData[i]["movie_title"] + "</a></th>";
-        rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "</tr>";
+    if (!(resultData[0]["movie_id"] === undefined))
+        for (let i = 0; i < Math.min(10, resultData.length); i++) {
+            let rowHTML = "";
+            rowHTML += "<tr>";
+            rowHTML += "<th><a href='single-movie.html?id=" + resultData[i]["movie_id"] + "'>" + resultData[i]["movie_title"] + "</a></th>";
+            rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
+            rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
+            rowHTML += "</tr>";
 
-        // Append the row created to the table body, which will refresh the page
-        movieTableBodyElement.append(rowHTML);
-    }
+            // Append the row created to the table body, which will refresh the page
+            movieTableBodyElement.append(rowHTML);
+        }
 
 }
 
@@ -58,5 +59,5 @@ jQuery.ajax({
     dataType: "json",  // Setting return data type
     method: "GET",// Setting request method
     url: "api/single-star?id=" + starId, // Setting request url, which is mapped by StarsServlet in Stars.java
-    success: (resultData)=>handleSingleStarResult(resultData) // Setting callback function to handle data returned successfully by the SingleStarServlet
+    success: (resultData) => handleSingleStarResult(resultData) // Setting callback function to handle data returned successfully by the SingleStarServlet
 });

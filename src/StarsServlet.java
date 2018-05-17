@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -30,21 +31,28 @@ public class StarsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         response.setContentType("application/json"); // Response mime type
+        String name = request.getParameter("name");
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
         try {
             // Get a connection from dataSource
-            Connection dbcon = dataSource.getConnection();
+            Connection conn = dataSource.getConnection();
 
-            // Declare our statement
-            Statement statement = dbcon.createStatement();
-
-            String query = "SELECT * from stars";
-
+            String query;
+            ResultSet rs;
+            PreparedStatement stat;
+            if (name == null) {
+                query = "SELECT * from stars";
+                stat = conn.prepareStatement(query);
+            } else {
+                query = "SELECT * FROM stars WHERE name LIKE ?";
+                stat = conn.prepareStatement(query);
+                stat.setString(1, "%"+name+"%");
+            }
             // Perform the query
-            ResultSet rs = statement.executeQuery(query);
+            rs = stat.executeQuery();
 
             JsonArray jsonArray = new JsonArray();
 
@@ -62,24 +70,24 @@ public class StarsServlet extends HttpServlet {
 
                 jsonArray.add(jsonObject);
             }
-            
+
             // write JSON string to output
             out.write(jsonArray.toString());
             // set response status to 200 (OK)
             response.setStatus(200);
 
             rs.close();
-            statement.close();
-            dbcon.close();
+            stat.close();
+            conn.close();
         } catch (Exception e) {
-        	
-			// write error message JSON object to output
-			JsonObject jsonObject = new JsonObject();
-			jsonObject.addProperty("errorMessage", e.getMessage());
-			out.write(jsonObject.toString());
 
-			// set reponse status to 500 (Internal Server Error)
-			response.setStatus(500);
+            // write error message JSON object to output
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("errorMessage", e.getMessage());
+            out.write(jsonObject.toString());
+
+            // set reponse status to 500 (Internal Server Error)
+            response.setStatus(500);
 
         }
         out.close();

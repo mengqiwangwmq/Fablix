@@ -1,3 +1,5 @@
+$('#body').append("<div id='div'></div>");
+$('#div').load("_entrypoint.html",function(){jQuery("#login_form").submit((event) => submitLoginForm(event))});
 
 /**
  * Handle the data returned by LoginServlet
@@ -11,14 +13,14 @@ function handleLoginResult(resultData) {
 
     // If login success, redirect to index.html page
     if (resultData["status"] === "success") {
-        window.location.replace("index.html");
+        window.location.replace("/employee/_dashboard.html");
     }
     // If login fail, display error message on <div> with id "login_error_message"
     else {
+
         console.log("show error message");
         console.log(resultData["message"]);
-        alert(resultData["message"]);
-        grecaptcha.reset();
+        jQuery("#login_error_message").text(resultData["message"]);
     }
 }
 
@@ -33,12 +35,13 @@ function submitLoginForm(formSubmitEvent) {
     //   which will cause the page to refresh
     //   see jQuery reference for details: https://api.jquery.com/submit/
     formSubmitEvent.preventDefault();
-    jQuery.post(
-        "api/login",
+    $.post(
+        "/fabflix/login",
         // Serialize the login form to the data sent by POST request
         jQuery("#login_form").serialize(),
         (resultDataString) => handleLoginResult(resultDataString));
+
 }
 
 // Bind the submit action of the form to a handler function
-jQuery("#login_form").submit((event) => submitLoginForm(event));
+//jQuery("#login_form").submit((event) => submitLoginForm(event));

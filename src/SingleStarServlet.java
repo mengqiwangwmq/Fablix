@@ -43,8 +43,11 @@ public class SingleStarServlet extends HttpServlet {
             Connection dbcon = dataSource.getConnection();
 
             // Construct a query with parameter represented by "?"
-            String query = "SELECT * from stars as s, stars_in_movies as sim, movies as m " +
-                    "where m.id = sim.movieId and sim.starId = s.id and s.id = ?";
+            String query = "SELECT * " +
+                    "FROM (stars as s " +
+                    "   LEFT OUTER JOIN stars_in_movies as sim ON sim.starId = s.id) " +
+                    "   LEFT OUTER JOIN movies as m ON m.id = sim.movieId " +
+                    "where s.id = ?";
 
             // Declare our statement
             PreparedStatement statement = dbcon.prepareStatement(query);
@@ -76,11 +79,12 @@ public class SingleStarServlet extends HttpServlet {
                 jsonObject.addProperty("star_id", starId);
                 jsonObject.addProperty("star_name", starName);
                 jsonObject.addProperty("star_dob", starDob);
-                jsonObject.addProperty("movie_id", movieId);
-                jsonObject.addProperty("movie_title", movieTitle);
-                jsonObject.addProperty("movie_year", movieYear);
-                jsonObject.addProperty("movie_director", movieDirector);
-
+                if (movieTitle != null) {
+                    jsonObject.addProperty("movie_id", movieId);
+                    jsonObject.addProperty("movie_title", movieTitle);
+                    jsonObject.addProperty("movie_year", movieYear);
+                    jsonObject.addProperty("movie_director", movieDirector);
+                }
                 jsonArray.add(jsonObject);
             }
 

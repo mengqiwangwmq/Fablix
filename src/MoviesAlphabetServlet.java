@@ -35,29 +35,35 @@ public class MoviesAlphabetServlet extends HttpServlet {
         int num_per_page = Integer.parseInt(request.getParameter("num_per_page"));
         String sort_by = request.getParameter("sort_by");
         String alphabet = request.getParameter("alphabet");
+        alphabet = alphabet + "%";
 
         PrintWriter out = response.getWriter();
 
         try {
             Connection conn = dataSource.getConnection();
-            Statement statement = conn.createStatement();
-
-            String query = "SELECT COUNT(*) AS num FROM movies WHERE title like'" + alphabet + "%'";
-            ResultSet rs = statement.executeQuery(query);
+            String query = "SELECT COUNT(*) AS num FROM movies WHERE title like ?";
+            PreparedStatement countStat = conn.prepareStatement(query);
+            countStat.setString(1, alphabet);
+            ResultSet rs = countStat.executeQuery();
             rs.next();
-            int num=rs.getInt("num");
-            int numPg=num/num_per_page;
+            int num = rs.getInt("num");
+            int numPg = num / num_per_page;
 
             query = "SELECT m.id AS id, title, year, director, rating " +
-                    "FROM movies AS m INNER JOIN ratings AS r ON m.id=r.movieId "+
-                    "WHERE m.title LIKE '" + alphabet + "%' " +
-                    "ORDER BY " + sort_by + " DESC " +
-                    "LIMIT " + String.valueOf(num_per_page) + " offset " + String.valueOf(page*num_per_page);
-            rs = statement.executeQuery(query);
+                    "FROM movies AS m INNER JOIN ratings AS r ON m.id=r.movieId " +
+                    "WHERE m.title LIKE ? " +
+                    "ORDER BY "+sort_by+" DESC " +
+                    "LIMIT ? offset ? ";
+            PreparedStatement queryStat = conn.prepareStatement(query);
+            queryStat.setString(1, alphabet);
+            queryStat.setInt(2, num_per_page);
+            queryStat.setInt(3, page * num_per_page);
+
+            rs = queryStat.executeQuery(query);
 
             String header[] = {"id", "title", "year", "director", "rating"};
 
-            JsonArray jsonArray =ConvertResultSetToJson.ConvertResultSetToJson(header,rs);
+            JsonArray jsonArray = ConvertResultSetToJson.ConvertResultSetToJson(header, rs);
 
             for (JsonElement i : jsonArray)
                 GetMovieGenreStar.GetMovieGenreStar(i.getAsJsonObject(), conn);
@@ -70,7 +76,8 @@ public class MoviesAlphabetServlet extends HttpServlet {
             out.write(responseObject.toString());
 
             rs.close();
-            statement.close();
+            queryStat.close();
+            countStat.close();
             conn.close();
         } catch (Exception e) {
             // write error message JSON object to output
