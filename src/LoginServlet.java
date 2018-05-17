@@ -34,38 +34,63 @@ public class LoginServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         JsonObject responseJsonObject = new JsonObject();
 
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+
+        // Verify reCAPTCHA
+        try {
+        } catch (Exception e) {
+            out.println("<html>");
+            out.println("<head><title>Error</title></head>");
+            out.println("<body>");
+            out.println("<p>recaptcha verification error</p>");
+            out.println("<p>" + e.getMessage() + "</p>");
+            out.println("</body>");
+            out.println("</html>");
+
+            out.close();
+            return;
+        }
 
         try {
-            // Get a connection from dataSource
-            Connection conn = dataSource.getConnection();
-
-            String query = "SELECT * FROM customers WHERE email=?";
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, username);
-            ResultSet rs = statement.executeQuery();
-
-            if (rs.next()) {
-                if (rs.getString("password").equals(password)) {
-                    // Login success:
-
-                    // set this user into the session
-                    request.getSession().setAttribute("user", new User(rs.getString("id")));
-
-                    responseJsonObject.addProperty("status", "success");
-                    responseJsonObject.addProperty("message", "success");
-                } else {
-                    //Login fail wrong password
-                    responseJsonObject.addProperty("status", "fail");
-                    responseJsonObject.addProperty("message", "incorrect password");
-                }
-            } else {
-                // Login fail no username
-                responseJsonObject.addProperty("status", "fail");
-                responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
+            if(!RecaptchaVerifyUtils.verify(gRecaptchaResponse)){
+                responseJsonObject.addProperty("status","fail");
+                responseJsonObject.addProperty("message","Recapthca fail");
             }
-            rs.close();
-            statement.close();
-            conn.close();
+            else {
+
+
+                // Get a connection from dataSource
+                Connection conn = dataSource.getConnection();
+
+                String query = "SELECT * FROM customers WHERE email=?";
+                PreparedStatement statement = conn.prepareStatement(query);
+                statement.setString(1, username);
+                ResultSet rs = statement.executeQuery();
+
+                if (rs.next()) {
+                    if (rs.getString("password").equals(password)) {
+                        // Login success:
+
+                        // set this user into the session
+                        request.getSession().setAttribute("user", new User(rs.getString("id")));
+
+                        responseJsonObject.addProperty("status", "success");
+                        responseJsonObject.addProperty("message", "success");
+                    } else {
+                        //Login fail wrong password
+                        responseJsonObject.addProperty("status", "fail");
+                        responseJsonObject.addProperty("message", "incorrect password");
+                    }
+                } else {
+                    // Login fail no username
+                    responseJsonObject.addProperty("status", "fail");
+                    responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
+                }
+                rs.close();
+                statement.close();
+                conn.close();
+            }
         } catch (Exception e) {
             out.write(e.toString());
         }

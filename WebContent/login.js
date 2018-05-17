@@ -15,10 +15,10 @@ function handleLoginResult(resultData) {
     }
     // If login fail, display error message on <div> with id "login_error_message"
     else {
-
         console.log("show error message");
         console.log(resultData["message"]);
-        jQuery("#login_error_message").text(resultData["message"]);
+        alert(resultData["message"]);
+        grecaptcha.reset();
     }
 }
 
@@ -27,6 +27,7 @@ function handleLoginResult(resultData) {
  * @param formSubmitEvent
  */
 function submitLoginForm(formSubmitEvent) {
+
     console.log("submit login form");
 
     // Important: disable the default action of submitting the form
@@ -38,6 +39,7 @@ function submitLoginForm(formSubmitEvent) {
         // Serialize the login form to the data sent by POST request
         jQuery("#login_form").serialize(),
         (resultDataString) => handleLoginResult(resultDataString));
+
 
 }
 
