@@ -53,12 +53,11 @@ public class AddStarServlet extends HttpServlet {
                 } else {
                     jsonObject.addProperty("status", "success");
                     jsonObject.addProperty("message","Add star "+name+" succeeded.");
-                    query = "SELECT id FROM stars ORDER BY id DESC limit 1";
+                    query = "SELECT SUBSTRING(max(id),3) AS id FROM stars";
                     Statement stat = conn.createStatement();
                     rs = stat.executeQuery(query);
                     rs.next();
-                    String lastId = rs.getString("id");
-                    String newId = "nm" + String.valueOf(Integer.parseInt(lastId.substring(2)) + 1);
+                    String newId = "nm" + String.valueOf(rs.getInt("id")+1);
                     query = "INSERT INTO stars VALUES (?,?,NULL)";
                     PreparedStatement addStat = conn.prepareStatement(query);
                     addStat.setString(1, newId);
@@ -77,12 +76,11 @@ public class AddStarServlet extends HttpServlet {
                 } else {
                     jsonObject.addProperty("status", "success");
                     jsonObject.addProperty("message","Add star "+name+" succeeded.");
-                    query = "SELECT id FROM stars ORDER BY id DESC limit 1";
+                    query = "SELECT concat('nm',convert(convert(substring(max(id),3),UNSIGNED)+1,CHAR(8))) AS id FROM stars";
                     Statement stat = conn.createStatement();
                     rs = stat.executeQuery(query);
                     rs.next();
-                    String lastId = rs.getString("id");
-                    String newId = "nm" + String.valueOf(Integer.parseInt(lastId.substring(2)) + 1);
+                    String newId = rs.getString("id");
                     query = "INSERT INTO stars VALUE (?,?,?)";
                     PreparedStatement addStat = conn.prepareStatement(query);
                     addStat.setString(1, newId);
