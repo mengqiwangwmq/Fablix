@@ -29,6 +29,44 @@ public class DOMForCasts124 extends DefaultHandler {
 
     Document dom;
 
+    public static void main(String[] args) {
+
+        //create an instance
+        DOMForCasts124 dpe = new DOMForCasts124();
+
+        //call run example
+        dpe.executeDOMForCasts124();
+
+        String loginUser = "root";
+        String loginPasswd = "wmq951126";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+
+        Connection connection;
+        Statement statement;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            // create database connection
+            connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+            for (Movie m : myMovies) {
+                try {
+
+                    AddMovie.addMovie(connection, m.title, m.director, m.year, m.stars_in_movies.get(0).name, m.genres_in_movies.get(0).name);
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                    continue;
+                }
+            }
+            try {
+                connection.close();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public DOMForCasts124() {
         myStars = new ArrayList<>();
     }
@@ -64,7 +102,7 @@ public class DOMForCasts124 extends DefaultHandler {
         if (nlof_dirfilms != null && nlof_dirfilms.getLength() > 0) {
             for (int count = 0; count < nlof_dirfilms.getLength(); count++) {
                 Element dirfilms = (Element) nlof_dirfilms.item(count);
-                director = getTextValue(dirfilms,"is");
+                director = getTextValue(dirfilms, "is");
                 NodeList nlof_filmc = dirfilms.getElementsByTagName("filmc");
                 if (nlof_filmc != null && nlof_filmc.getLength() > 0) {
                     for (int i = 0; i < nlof_filmc.getLength(); i++) {
@@ -161,62 +199,6 @@ public class DOMForCasts124 extends DefaultHandler {
         while (it.hasNext()) {
             System.out.println(it.next().toString());
         }
-    }
-
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
-
-    public static void main(String[] args) {
-
-        //create an instance
-        DOMForCasts124 dpe = new DOMForCasts124();
-
-        //call run example
-        dpe.executeDOMForCasts124();
-
-        String loginUser = "root";
-        String loginPasswd = "wmq951126";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
-
-        Connection connection;
-        Statement statement;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            // create database connection
-            connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-            for(Movie m : myMovies){
-                try{
-                   
-                    AddMovie.addMovie(connection, m.title, m.director, m.year, m.stars_in_movies.get(0).name, m.genres_in_movies.get(0).name);
-                } catch (Exception e){
-                    System.out.println(e.toString());
-                    continue;
-                }
-            }
-            try {
-                connection.close();
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
 
