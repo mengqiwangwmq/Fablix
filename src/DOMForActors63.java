@@ -10,6 +10,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,7 +22,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 // import java.util.ArrayList;
 public class DOMForActors63 extends DefaultHandler {
-    ArrayList<Star> myStars;
+    static ArrayList<Star> myStars;
     Document dom;
     public DOMForActors63(){
         myStars = new ArrayList<>();
@@ -32,7 +34,7 @@ public class DOMForActors63 extends DefaultHandler {
         parseDocument();
 
         //Iterate through the list and print the data
-        printData();
+        //printData();
     }
     private void parseXmlFile(){
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -152,20 +154,36 @@ public class DOMForActors63 extends DefaultHandler {
     }
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
-    public void connectToDatabase(String[] args) {
+    public static void main(String[] args) {
+
         //create an instance
         DOMForActors63 dpe = new DOMForActors63();
 
         //call run example
         dpe.executeDOMForActors63();
+
+        String loginUser = "root";
+        String loginPasswd = "wmq951126";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+
+
         try {
-            Connection conn = dataSource.getConnection();
-            Statement statement = conn.createStatement();
-            String query;
+            Class.forName("com.mysql.jdbc.Driver");
+            // create database connection
+            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+
+            Statement statement = connection.createStatement();
+            String query = "";
+            int i = 9423080;
             for (Star s : myStars) {
-                String myQuery = String.format("insert into stars value()");
+                AddStar.addStar(connection,s.name,s.birthYear);
+
             }
+
+
+
         } catch (Exception e) {
+            System.out.println(e.getMessage());
 
         }
     }

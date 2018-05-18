@@ -1,7 +1,7 @@
 class Star {
-    private String id;
-    private String name;
-    private  Integer birthYear;
+    public String id;
+    public String name;
+    public   Integer birthYear;
     public Star(){
 
     }
