@@ -1,13 +1,10 @@
 import com.google.gson.JsonObject;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class AddStar {
-    public static JsonObject addStar(Connection conn, String name,Integer birthYear) throws Exception{
-        JsonObject jsonObject=new JsonObject();
+    public static JsonObject addStar(Connection conn, String name, Integer birthYear) throws Exception {
+        JsonObject jsonObject = new JsonObject();
         PreparedStatement exitsStat;
         ResultSet rs;
 
@@ -22,12 +19,12 @@ public class AddStar {
                 jsonObject.addProperty("message", "Star " + name + " exists.");
             } else {
                 jsonObject.addProperty("status", "success");
-                jsonObject.addProperty("message","Add star "+name+" succeeded.");
+                jsonObject.addProperty("message", "Add star " + name + " succeeded.");
                 query = "SELECT SUBSTRING(max(id),3) AS id FROM stars";
                 Statement stat = conn.createStatement();
                 rs = stat.executeQuery(query);
                 rs.next();
-                String newId = "nm" + String.valueOf(rs.getInt("id")+1);
+                String newId = "nm" + String.valueOf(rs.getInt("id") + 1);
                 query = "INSERT INTO stars VALUES (?,?,NULL)";
                 PreparedStatement addStat = conn.prepareStatement(query);
                 addStat.setString(1, newId);
@@ -45,7 +42,7 @@ public class AddStar {
                 jsonObject.addProperty("message", "Star " + name + " with birth year " + birthYear + " exists.");
             } else {
                 jsonObject.addProperty("status", "success");
-                jsonObject.addProperty("message","Add star "+name+" succeeded.");
+                jsonObject.addProperty("message", "Add star " + name + " succeeded.");
                 query = "SELECT concat('nm',convert(convert(substring(max(id),3),UNSIGNED)+1,CHAR(8))) AS id FROM stars";
                 Statement stat = conn.createStatement();
                 rs = stat.executeQuery(query);
@@ -55,7 +52,10 @@ public class AddStar {
                 PreparedStatement addStat = conn.prepareStatement(query);
                 addStat.setString(1, newId);
                 addStat.setString(2, name);
-                addStat.setInt(3, birthYear);
+                if (birthYear == null)
+                    addStat.setNull(3, Types.INTEGER);
+                else
+                    addStat.setInt(3, birthYear);
                 addStat.execute();
             }
         }

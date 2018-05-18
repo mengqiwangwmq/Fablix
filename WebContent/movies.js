@@ -48,12 +48,12 @@ function handleMovieResult(resultData, page, num_per_page, sort_by) {
             let name = i["star"][j];
             star += "<a href='single-star.html?id=" + id + "'>" + name + "</a> ";
         }
-        handleSingleMovieResult(i,0);
+        handleSingleMovieResult(i, 0);
 
     }
-    for(let i of resultData){
-        let id=i["id"];
-        $("#title_"+id).html("<a href='single-movie.html?id=" + id + "'>" + $("#title_"+id).html() + "<a>");
+    for (let i of resultData) {
+        let id = i["id"];
+        $("#title_" + id).html("<a href='single-movie.html?id=" + id + "'>" + $("#title_" + id).html() + "<a>");
     }
     pagination(page, num_per_page, num_page);
 }
@@ -147,6 +147,19 @@ else if (browse === "Genre") {
             success: (resultData) => handleMovieResult(resultData, page, num_per_page, sort_by)
         })
     }
+} else if (browse === "Search") {
+    let val = param.get("search");
+    $('#SubTitle').html('SEARCH MOVIES')
+    $('#categories').load("searchbar.html");
+    if (val != null) {
+        $.ajax({
+            dataType: "json",
+            method: "GET",
+            url: "api/movies-search?page=" + page + "&num_per_page=" + num_per_page + "&sort_by=" + sort_by + "&search=" + val,
+            success: (resultData) => handleMovieResult(resultData, page, num_per_page)
+        });
+    }
+
 }
 
 
@@ -174,5 +187,17 @@ function updateBrowse() {
     param.set("num_per_page", num_per_page);
     let sort_by = $('#sort_by').find('option:selected').val();
     param.set("sort_by", sort_by);
+    window.location.href = urlWithoutParam() + paramToUrl(param);
+}
+
+function search(){
+    let param=new Map();
+    param.set("browse", $('#browse').find('option:selected').val());
+    let num_per_page = $('#num_per_page').val();
+    param.set("num_per_page", num_per_page);
+    let sort_by = $('#sort_by').find('option:selected').val();
+    param.set("sort_by", sort_by);
+    let search=$("#search_bar_input").val();
+    param.set("search",search);
     window.location.href = urlWithoutParam() + paramToUrl(param);
 }

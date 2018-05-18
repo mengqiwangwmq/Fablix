@@ -49,10 +49,13 @@ public class MoviesServlet extends HttpServlet {
             int num=rs.getInt("num");
             int numPg=num/num_per_page;
             query = "SELECT m.id AS id, title, year, director, rating " +
-                    "FROM (movies AS m INNER JOIN ratings AS r ON m.id=r.movieId) " +
+                    "FROM (movies AS m LEFT JOIN ratings AS r ON m.id=r.movieId) " +
                     "ORDER BY " + sort_by + " DESC " +
-                    "LIMIT " + String.valueOf(num_per_page) + " offset " + String.valueOf(page*num_per_page);
-            rs = statement.executeQuery(query);
+                    "LIMIT ? offset ?";
+            PreparedStatement preparedStatement=conn.prepareStatement(query);
+            preparedStatement.setInt(1,num_per_page);
+            preparedStatement.setInt(2,page*num_per_page);
+            rs = preparedStatement.executeQuery();
 
             String header[] = {"id", "title", "year", "director", "rating"};
 
@@ -76,7 +79,6 @@ public class MoviesServlet extends HttpServlet {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getMessage());
             out.write(jsonObject.toString());
-
             // set reponse status to 500 (Internal Server Error)
             response.setStatus(500);
         }

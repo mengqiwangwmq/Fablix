@@ -35,38 +35,45 @@ public class LoginServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         JsonObject responseJsonObject = new JsonObject();
 
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
 
         try {
-            // Get a connection from dataSource
-            Connection conn = dataSource.getConnection();
-
-            String query = "SELECT * FROM customers WHERE email=?";
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, username);
-            ResultSet rs = statement.executeQuery();
-
-            if (rs.next()) {
-                if (new StrongPasswordEncryptor().checkPassword(password, rs.getString("password"))) {
-                    // Login success:
-
-                    // set this user into the session
-                    request.getSession().setAttribute("user", new User(rs.getString("id")));
-
-                    responseJsonObject.addProperty("status", "success");
-                    responseJsonObject.addProperty("message", "success");
-                } else {
-                    //Login fail wrong password
-                    responseJsonObject.addProperty("status", "fail");
-                    responseJsonObject.addProperty("message", "incorrect password");
-                }
-            } else {
-                // Login fail no username
+            if (!RecaptchaVerifyUtils.verify(gRecaptchaResponse)) {
                 responseJsonObject.addProperty("status", "fail");
-                responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
+                responseJsonObject.addProperty("message", "Recapthca fail");
+            } else {
+                // Get a connection from dataSource
+                Connection conn = dataSource.getConnection();
+
+                String query = "SELECT * FROM customers WHERE email=?";
+                PreparedStatement statement = conn.prepareStatement(query);
+                statement.setString(1, username);
+                ResultSet rs = statement.executeQuery();
+
+                if (rs.next()) {
+                    if (new StrongPasswordEncryptor().checkPassword(password, rs.getString("password"))) {
+                        // Login success:
+
+                        // set this user into the session
+                        request.getSession().setAttribute("user", new User(rs.getString("id")));
+
+                        responseJsonObject.addProperty("status", "success");
+                        responseJsonObject.addProperty("message", "success");
+                    } else {
+                        //Login fail wrong password
+                        responseJsonObject.addProperty("status", "fail");
+                        responseJsonObject.addProperty("message", "incorrect password");
+                    }
+                } else {
+                    // Login fail no username
+                    responseJsonObject.addProperty("status", "fail");
+                    responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
+                }
+                rs.close();
+                statement.close();
+                conn.close();
             }
-            rs.close();
-            statement.close();
-            conn.close();
         } catch (Exception e) {
             out.write(e.toString());
         }
