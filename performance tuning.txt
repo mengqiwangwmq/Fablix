@@ -1,0 +1,2 @@
+Performance Tuning
+Get the connection at the beginning of parsing a whole xml file to save the time used to connect.
