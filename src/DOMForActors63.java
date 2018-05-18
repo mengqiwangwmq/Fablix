@@ -24,6 +24,39 @@ import org.xml.sax.SAXException;
 public class DOMForActors63 extends DefaultHandler {
     static ArrayList<Star> myStars;
     Document dom;
+    public static void main(String[] args) {
+
+        //create an instance
+        DOMForActors63 dpe = new DOMForActors63();
+
+        //call run example
+        dpe.executeDOMForActors63();
+
+        String loginUser = "root";
+        String loginPasswd = "wmq951126";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            // create database connection
+            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+
+            Statement statement = connection.createStatement();
+            String query = "";
+            int i = 9423080;
+            for (Star s : myStars) {
+                AddStar.addStar(connection,s.name,s.birthYear);
+
+            }
+
+
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+
+        }
+    }
     public DOMForActors63(){
         myStars = new ArrayList<>();
     }
@@ -152,39 +185,7 @@ public class DOMForActors63 extends DefaultHandler {
             System.out.println(it.next().toString());
         }
     }
-    public static void main(String[] args) {
 
-        //create an instance
-        DOMForActors63 dpe = new DOMForActors63();
-
-        //call run example
-        dpe.executeDOMForActors63();
-
-        String loginUser = "root";
-        String loginPasswd = "wmq951126";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
-
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            // create database connection
-            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-
-            Statement statement = connection.createStatement();
-            String query = "";
-            int i = 9423080;
-            for (Star s : myStars) {
-                AddStar.addStar(connection,s.name,s.birthYear);
-
-            }
-
-
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-
-        }
-    }
 
 
 
