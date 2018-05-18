@@ -152,8 +152,6 @@ public class DOMForActors63 extends DefaultHandler {
             System.out.println(it.next().toString());
         }
     }
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
     public static void main(String[] args) {
 
         //create an instance
