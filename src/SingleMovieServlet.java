@@ -34,17 +34,26 @@ public class SingleMovieServlet extends HttpServlet {
         response.setContentType("application/json");
 
         String id = request.getParameter("id");
+        String query;
+        if (id==null) {
+            id=request.getParameter("title");
+            query = "SELECT m.id AS id, title, year, director, rating " +
+                    "FROM (movies AS m INNER JOIN ratings AS r ON m.id=r.movieId) " +
+                    "WHERE m.title=?";
+        } else {
+            query = "SELECT m.id AS id, title, year, director, rating " +
+                    "FROM (movies AS m INNER JOIN ratings AS r ON m.id=r.movieId) " +
+                    "WHERE m.id=?";
+        }
 
         PrintWriter out = response.getWriter();
 
         try {
             Connection conn = dataSource.getConnection();
-            Statement statement = conn.createStatement();
-            String query = "SELECT m.id AS id, title, year, director, rating " +
-                    "FROM (movies AS m INNER JOIN ratings AS r ON m.id=r.movieId) " +
-                    "WHERE m.id='" + id + "'";
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, id);
 
-            ResultSet rs = statement.executeQuery(query);
+            ResultSet rs = statement.executeQuery();
 
             String header[] = {"id", "title", "year", "director", "rating"};
 
@@ -52,6 +61,7 @@ public class SingleMovieServlet extends HttpServlet {
 
 
             GetMovieGenreStar.GetMovieGenreStar(jsonObject, conn);
+            jsonObject.addProperty("success", "success");
 
             out.write(jsonObject.toString());
 
@@ -61,6 +71,7 @@ public class SingleMovieServlet extends HttpServlet {
         } catch (Exception e) {
             // write error message JSON object to output
             JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("success", "fail");
             jsonObject.addProperty("errorMessage", e.getMessage());
             out.write(jsonObject.toString());
 

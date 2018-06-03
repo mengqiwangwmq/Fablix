@@ -116,7 +116,7 @@ public class FormServlet extends HttpServlet {
                 //out.println(String.format("<tr><td>%s</td><td>%s</td><td>%S</td><td>%S</td><td>%s</td></tr>",(String)i.get("title"),(String)i.get("year"),
                         //(String)i.get("director"),(String)i.get("stars"),(String)i.get("genres")));
             }
-            out.println(Map.toString());
+            out.write(Map.toString());
             //out.println("</table>");
 
 

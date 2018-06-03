@@ -19,7 +19,7 @@ public class DOMForMain {
     static Document dom;
 
     static final String user = "root";
-    static final String passwd = "2018_Satomi";
+    static final String passwd = "wmq951126";
     static final String url = "jdbc:mysql://localhost:3306/moviedb";
     static Connection conn;
 

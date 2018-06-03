@@ -6,7 +6,7 @@ function getParam() {
     let mapParam = new Map();
     for (let i = 0; i < param.length; ++i) {
         param[i] = param[i].split("=");
-        mapParam.set(param[i][0], param[i][1]);
+        mapParam.set(param[i][0], decodeURI(param[i][1]));
     }
     return mapParam;
 }

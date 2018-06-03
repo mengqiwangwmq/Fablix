@@ -94,7 +94,8 @@ if (param != null) {
 }
 $("#num_per_page").attr("value", num_per_page);
 $('#sort_by').find("option:contains(" + sort_by + ")").attr("selected", "selected");
-$('#browse').find("option:contains(" + browse + ")").attr("selected", "selected");
+//$('#browse').find("option:[text=" + browse + "]").attr("selected", "selected");
+$('#browse').val(browse);
 
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
@@ -147,7 +148,7 @@ else if (browse === "Genre") {
             success: (resultData) => handleMovieResult(resultData, page, num_per_page, sort_by)
         })
     }
-} else if (browse === "Search") {
+} else if (browse === "Search"||browse==="Fulltext Search") {
     let val = param.get("search");
     $('#SubTitle').html('SEARCH MOVIES')
     $('#categories').load("searchbar.html");
@@ -155,7 +156,7 @@ else if (browse === "Genre") {
         $.ajax({
             dataType: "json",
             method: "GET",
-            url: "api/movies-search?page=" + page + "&num_per_page=" + num_per_page + "&sort_by=" + sort_by + "&search=" + val,
+            url: (browse === "Search"?"api/movies-search?page=":"api/movies-fulltext-search?page=") + page + "&num_per_page=" + num_per_page + "&sort_by=" + sort_by + "&search=" + val,
             success: (resultData) => handleMovieResult(resultData, page, num_per_page)
         });
     }

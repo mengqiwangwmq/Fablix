@@ -30,7 +30,7 @@ public class RecaptchaVerifyUtils {
 
 
         // Data will be sent to the server.
-        String postParams = "secret=" + RecaptchaConstants.SECRET_KEY + "&response=" + gRecaptchaResponse;
+        String postParams = "secret=" + RecaptchaConstants.ANDROID_SECRET_KEY + "&response=" + gRecaptchaResponse;
 
         // Send Request
         conn.setDoOutput(true);

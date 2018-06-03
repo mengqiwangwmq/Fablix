@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
   <link href="home.css" rel="stylesheet" type="text/css">
   <title>Index</title>
 </head>
@@ -55,6 +56,15 @@
           </tbody>
           <!--页面跳转-->
           <tbody>
+            <!--搜索栏-->
+          <tr>
+            <td>
+              <form id="movie_fulltext_search" method="get" action="#">
+                <input id="full_search_bar_input" placeholder="Fulltext Search Movie Title" name="search""/>
+                <input type="submit"/>
+              </form>
+            </td>
+          </tr>
           <tr>
             <td>
               <a href="search.html">search</a><br/>
@@ -93,7 +103,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.7/jquery.autocomplete.min.js"></script>
 <script src="generate-header.js"></script>
 <script src="logout.js"></script>
+<script src="param.js"></script>
+<script src="index.js"></script>
 </body>
 </html>

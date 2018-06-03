@@ -9,10 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
@@ -38,7 +35,43 @@ public class LoginServlet extends HttpServlet {
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
         System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
 
+
         try {
+            Connection conn = dataSource.getConnection();
+            String query = "SELECT * FROM customers WHERE email=?";
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, username);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                if (new StrongPasswordEncryptor().checkPassword(password, rs.getString("password"))) {
+                    // Login success:
+
+                    // set this user into the session
+                    request.getSession().setAttribute("user", new User(rs.getString("id")));
+
+                    responseJsonObject.addProperty("status", "success");
+                    responseJsonObject.addProperty("message", "success");
+                } else {
+                    //Login fail wrong password
+                    responseJsonObject.addProperty("status", "fail");
+                    responseJsonObject.addProperty("message", "incorrect password");
+                }
+            } else {
+                // Login fail no username
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
+                response.getWriter().write(responseJsonObject.toString());
+            }
+            rs.close();
+            statement.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        /*try {
             if (!RecaptchaVerifyUtils.verify(gRecaptchaResponse)) {
                 responseJsonObject.addProperty("status", "fail");
                 responseJsonObject.addProperty("message", "Recapthca fail");
@@ -69,6 +102,7 @@ public class LoginServlet extends HttpServlet {
                     // Login fail no username
                     responseJsonObject.addProperty("status", "fail");
                     responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
+                    response.getWriter().write(responseJsonObject.toString());
                 }
                 rs.close();
                 statement.close();
@@ -76,7 +110,7 @@ public class LoginServlet extends HttpServlet {
             }
         } catch (Exception e) {
             out.write(e.toString());
-        }
+        }*/
         out.write(responseJsonObject.toString());
         out.close();
     }
