@@ -53,7 +53,7 @@ public class MoviesFulltextSearchServlet extends HttpServlet {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             for (int i = 0; i < numWords; ++i) {
                 preparedStatement.setString(i * 2 + 1, search[i] + "%");
-                preparedStatement.setString(i * 2 + 2, " %" + search[i] + "%");
+                preparedStatement.setString(i * 2 + 2, "% " + search[i] + "%");
             }
             ResultSet rs = preparedStatement.executeQuery();
             int num;
@@ -63,9 +63,9 @@ public class MoviesFulltextSearchServlet extends HttpServlet {
 
             query = "SELECT m.id AS id, title, year, director, rating " +
                     "FROM (movies AS m LEFT JOIN ratings AS r ON m.id=r.movieId) " +
-                    "WHERE m.title LIKE ? OR m.title LIKE ? ";
+                    "WHERE (m.title LIKE ? OR m.title LIKE ?) ";
             for (int i = 1; i < numWords; ++i) {
-                query += "OR m.title LIKE ? OR m.title LIKE ? ";
+                query += "AND (m.title LIKE ? OR m.title LIKE ?) ";
             }
             ;
             query += "ORDER BY " + sort_by + " DESC " +
@@ -73,7 +73,7 @@ public class MoviesFulltextSearchServlet extends HttpServlet {
             preparedStatement = conn.prepareStatement(query);
             for (int i = 0; i < numWords; ++i) {
                 preparedStatement.setString(i * 2 + 1, search[i] + "%");
-                preparedStatement.setString(i * 2 + 2, " %" + search[i] + "%");
+                preparedStatement.setString(i * 2 + 2, "% " + search[i] + "%");
             }
             preparedStatement.setInt(numWords * 2 + 1, num_per_page);
             preparedStatement.setInt(numWords * 2 + 2, (page - 1) * num_per_page);
@@ -83,35 +83,23 @@ public class MoviesFulltextSearchServlet extends HttpServlet {
             long endTime = System.nanoTime();
             long elapsedTime = endTime - startTime;
 
-            String path = getServletContext().getRealPath("TS&TJ.txt");
-            //File f = new File(path);
-            FileWriter fw = new FileWriter(path,true);
-            BufferedWriter bw = new BufferedWriter(new FileWriter(path));
-            try{
-
-                bw.write(Long.toString(elapsedTime)+"\n");
-            }catch (IOException e){
+            String path = getServletContext().getRealPath("TS&TJ");
+            BufferedWriter bw = new BufferedWriter(new FileWriter(path,true));
+            System.out.println("a");
+            try {
+                bw.write(Long.toString(elapsedTime) + "\n");
+            } catch (IOException e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
                 try {
-
                     if (bw != null)
                         bw.close();
-
-                    if (fw != null)
-                        fw.close();
-
                 } catch (IOException ex) {
 
                     ex.printStackTrace();
 
                 }
             }
-
-
-
-
-
 
 
             String header[] = {"id", "title", "year", "director", "rating"};
