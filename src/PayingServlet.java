@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 @WebServlet(name = "PayingServlet", urlPatterns = "/api/pay")
 public class PayingServlet extends HttpServlet {
-    @Resource(name = "jdbc/moviedb")
+    @Resource(name = "jdbc/writedb")
     private DataSource dataSource;
 
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");

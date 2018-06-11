@@ -9,5 +9,12 @@
               type="javax.sql.DataSource"
               username="root"
               password="2018_Satomi"
-              url="jdbc:mysql://localhost:3306/moviedb"/>
+              url="jdbc:mysql://localhost:3306/moviedb?autoReconnect=true&amp;useSSL=false&amp;cachePrepStmts=true"/>
+    <Resource name="jdbc/writedb"
+              auth="Container"
+              driverClassName="com.mysql.jdbc.Driver"
+              type="javax.sql.DataSource"
+              username="root"
+              password="2018_Satomi"
+              url="jdbc:mysql://18.191.47.227:3306/moviedb?autoReconnect=true&amp;useSSL=false&amp;cachePrepStmts=true"/>
 </Context>

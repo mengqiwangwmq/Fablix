@@ -18,7 +18,7 @@ import java.sql.Statement;
 public class AddStarServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    @Resource(name = "jdbc/moviedb")
+    @Resource(name = "jdbc/writedb")
     private DataSource dataSource;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

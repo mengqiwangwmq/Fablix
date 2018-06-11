@@ -14,7 +14,7 @@ import java.sql.*;
 public class AddMovieFeatureServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    @Resource(name = "jdbc/moviedb")
+    @Resource(name = "jdbc/writedb")
     private DataSource dataSource;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
