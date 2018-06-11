@@ -47,8 +47,8 @@ public class MoviesFulltextSearchServletNoPooling extends HttpServlet {
             long startTime = System.nanoTime();
 
             // change this to your own mysql username and password
-            String loginUser = "mytestuser";
-            String loginPasswd = "mypassword";
+            String loginUser = "root";
+            String loginPasswd = "2018_Satomi";
             String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection conn = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);

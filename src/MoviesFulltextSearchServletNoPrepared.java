@@ -17,7 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-@WebServlet(name = "MoviesSearchServlet", urlPatterns = "/api/movies-fulltext-search-no-prepared")
+@WebServlet(name = "MoviesFulltextSearchServletNoPrepared", urlPatterns = "/api/movies-fulltext-search-no-prepared")
 public class MoviesFulltextSearchServletNoPrepared extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
