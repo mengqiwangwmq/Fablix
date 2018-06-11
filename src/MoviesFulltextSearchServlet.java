@@ -41,6 +41,8 @@ public class MoviesFulltextSearchServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
+            long startTime = System.nanoTime();
+
             Connection conn = dataSource.getConnection();
             String query = "SELECT count(*) AS num " +
                     "FROM (movies AS m LEFT JOIN ratings AS r ON m.id=r.movieId) " +
@@ -55,7 +57,9 @@ public class MoviesFulltextSearchServlet extends HttpServlet {
                 preparedStatement.setString(i * 2 + 1, search[i] + "%");
                 preparedStatement.setString(i * 2 + 2, "% " + search[i] + "%");
             }
+            long start1 = System.nanoTime();
             ResultSet rs = preparedStatement.executeQuery();
+            long elapse1 = System.nanoTime() - start1;
             int num;
             rs.next();
             num = rs.getInt("num");
@@ -77,29 +81,11 @@ public class MoviesFulltextSearchServlet extends HttpServlet {
             }
             preparedStatement.setInt(numWords * 2 + 1, num_per_page);
             preparedStatement.setInt(numWords * 2 + 2, (page - 1) * num_per_page);
-
-            long startTime = System.nanoTime();
+            long start2 = System.nanoTime();
             rs = preparedStatement.executeQuery();
-            long endTime = System.nanoTime();
-            long elapsedTime = endTime - startTime;
-
-            String path = getServletContext().getRealPath("TS&TJ");
-            BufferedWriter bw = new BufferedWriter(new FileWriter(path,true));
-            System.out.println("a");
-            try {
-                bw.write(Long.toString(elapsedTime) + "\n");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (bw != null)
-                        bw.close();
-                } catch (IOException ex) {
-
-                    ex.printStackTrace();
-
-                }
-            }
+            long elapse2 = elapse1+System.nanoTime() - start2;
+            long[] tmpE2=new long[1];
+            tmpE2[0]=elapse2;
 
 
             String header[] = {"id", "title", "year", "director", "rating"};
@@ -107,7 +93,32 @@ public class MoviesFulltextSearchServlet extends HttpServlet {
             JsonArray jsonArray = ConvertResultSetToJson.ConvertResultSetToJson(header, rs);
 
             for (JsonElement i : jsonArray)
-                GetMovieGenreStar.GetMovieGenreStar(i.getAsJsonObject(), conn);
+                GetMovieGenreStar.GetMovieGenreStarWithTime(i.getAsJsonObject(), conn,tmpE2);
+
+            elapse2=tmpE2[0];
+            long endTime = System.nanoTime();
+            long elapsedTime = endTime - startTime;
+
+            String TSPath = getServletContext().getRealPath("TS");
+            BufferedWriter TSBW = new BufferedWriter(new FileWriter(TSPath, true));
+            String TJPath = getServletContext().getRealPath("TJ");
+            BufferedWriter TJBW = new BufferedWriter(new FileWriter(TJPath, true));
+            System.out.println("a");
+            try {
+                TSBW.write(Long.toString(elapsedTime) + "\n");
+                TJBW.write(Long.toString(elapse2)+"\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (TSBW != null)
+                        TSBW.close();
+                    if (TJBW!=null)
+                        TJBW.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
 
             JsonObject responseObject = new JsonObject();
             responseObject.add("content", jsonArray);
