@@ -1,5 +1,4 @@
 import com.google.gson.JsonObject;
-
 import java.sql.*;
 
 public class AddMovie {
